@@ -25,36 +25,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- 自定义样�?-->
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
-        <!-- 顶部工具栏 -->
+        <!-- 顶部工具�?-->
         <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
-            <!-- 左侧: Logo 和模块导航 -->
+            <!-- 左侧: Logo 和模块导�?-->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
-                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <!-- 模块标签 - 可根据当前页面动态高�?-->
                 <nav class="flex space-x-1">
                     <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
                     <a href="checkout-home.html" class="px-4 py-2 rounded bg-gray-100 font-medium">结账</a>
                     <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
                     <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接�?/a>
                 </nav>
             </div>
             
-            <!-- 右侧: 状态区域 -->
+            <!-- 右侧: 状态区�?-->
             <div class="flex items-center space-x-4">
-                <!-- 网络状态 -->
+                <!-- 网络状�?-->
                 <div class="status-icon">
                     <i class="fas fa-wifi text-green-500"></i>
                 </div>
                 
-                <!-- 打印机状态 -->
+                <!-- 打印机状�?-->
                 <div class="status-icon">
                     <i class="fas fa-print text-green-500"></i>
                 </div>
@@ -83,12 +83,12 @@
                              class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
                             <div class="p-3 border-b">
                                 <div class="font-medium">张三</div>
-                                <div class="text-sm text-gray-600">收银员</div>
+                                <div class="text-sm text-gray-600">收银�?/div>
                             </div>
                             <div class="p-2">
                                 <a href="login.html" 
                                    class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                                    退出登录
+                                    退出登�?
                                 </a>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
             </div>
         </header>
         
-        <!-- 主内容区域 -->
+        <!-- 主内容区�?-->
         <main class="flex-1 p-4" x-data="{
             searchQuery: '',
             showMemberModal: false,
@@ -110,9 +110,9 @@
             discountedAmount: 0,
             finalAmount: 295.90,
             members: [
-                { id: 1, name: '李小明', phone: '138****1234', level: '黄金会员', points: 2500, balance: 560, discount: 0.9 },
-                { id: 2, name: '王小红', phone: '139****5678', level: '白金会员', points: 5600, balance: 1200, discount: 0.8 },
-                { id: 3, name: '张小强', phone: '135****9012', level: '钻石会员', points: 10500, balance: 3600, discount: 0.7 }
+                { id: 1, name: '李小�?, phone: '138****1234', level: '黄金会员', points: 2500, balance: 560, discount: 0.9 },
+                { id: 2, name: '王小�?, phone: '139****5678', level: '白金会员', points: 5600, balance: 1200, discount: 0.8 },
+                { id: 3, name: '张小�?, phone: '135****9012', level: '钻石会员', points: 10500, balance: 3600, discount: 0.7 }
             ],
             
             getFilteredMembers() {
@@ -140,7 +140,7 @@
                 // 模拟支付处理
                 setTimeout(() => {
                     this.loading = false;
-                    alert('支付成功！');
+                    alert('支付成功�?);
                     window.location.href = 'checkout-history.html';
                 }, 1500);
             },
@@ -149,7 +149,7 @@
                 window.location.href = 'checkout-home.html';
             }
         }">
-            <!-- 页面标题与返回按钮 -->
+            <!-- 页面标题与返回按�?-->
             <div class="flex justify-between mb-6">
                 <div class="flex items-center">
                     <a href="checkout-home.html" class="mr-3 p-2 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
@@ -166,7 +166,7 @@
             
             <!-- 主内容区 -->
             <div class="flex gap-4">
-                <!-- 左侧：订单详情 -->
+                <!-- 左侧：订单详�?-->
                 <div class="w-2/3 bg-white rounded-xl p-6 shadow-sm overflow-hidden">
                     <!-- 桌台信息 -->
                     <div class="mb-6 pb-4 border-b border-gray-100">
@@ -175,16 +175,16 @@
                                 <h2 class="text-xl font-bold">1号桌</h2>
                                 <div class="text-sm text-gray-500 mt-1">
                                     <span>大厅</span>
-                                    <span class="mx-1">•</span>
-                                    <span>3人用餐</span>
-                                    <span class="mx-1">•</span>
-                                    <span>用餐时长: 1小时20分</span>
+                                    <span class="mx-1">�?/span>
+                                    <span>3人用�?/span>
+                                    <span class="mx-1">�?/span>
+                                    <span>用餐时长: 1小时20�?/span>
                                 </div>
                             </div>
                             <div class="flex items-start">
                                 <span class="px-2 py-1 bg-green-100 text-green-700 text-sm rounded-md">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    可结账
+                                    可结�?
                                 </span>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                         <h3 class="font-bold mb-4">订单明细</h3>
                         
                         <div class="bg-gray-50 rounded-lg p-4 divide-y divide-gray-100">
-                            <!-- 订单项 -->
+                            <!-- 订单�?-->
                             <div class="py-3 flex items-center">
                                 <div class="w-16 text-center text-gray-500">1 x</div>
                                 <div class="flex-1">宫保鸡丁</div>
@@ -218,7 +218,7 @@
                             </div>
                             <div class="py-3 flex items-center">
                                 <div class="w-16 text-center text-gray-500">1 x</div>
-                                <div class="flex-1">拍黄瓜</div>
+                                <div class="flex-1">拍黄�?/div>
                                 <div class="w-24 text-right">¥28.00</div>
                             </div>
                             <div class="py-3 flex items-center">
@@ -240,7 +240,7 @@
                             <i class="fas fa-comment-alt mt-1 mr-2 text-yellow-500"></i>
                             <div>
                                 <h4 class="font-medium text-yellow-700">订单备注</h4>
-                                <p class="text-sm text-yellow-600 mt-1">窗边的座位，客人有小孩</p>
+                                <p class="text-sm text-yellow-600 mt-1">窗边的座位，客人有小�?/p>
                             </div>
                         </div>
                     </div>
@@ -253,7 +253,7 @@
                                 <span>¥269.00</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>服务费 (10%)</span>
+                                <span>服务�?(10%)</span>
                                 <span>¥26.90</span>
                             </div>
                             <div class="flex justify-between pt-2 border-t border-gray-200 font-bold">
@@ -264,7 +264,7 @@
                     </div>
                 </div>
                 
-                <!-- 右侧：会员支付 -->
+                <!-- 右侧：会员支�?-->
                 <div class="w-1/3 bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
                     <!-- 面板标题 -->
                     <div class="p-4 border-b border-gray-200">
@@ -358,7 +358,7 @@
                             </button>
                             <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
                                 <i class="fab fa-alipay text-xl text-blue-500"></i>
-                                <span class="text-sm mt-1">支付宝</span>
+                                <span class="text-sm mt-1">支付�?/span>
                             </button>
                             <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
                                 <i class="fas fa-credit-card text-xl text-gray-600"></i>
@@ -390,7 +390,7 @@
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <span>处理中...</span>
+                                        <span>处理�?..</span>
                                     </div>
                                 </template>
                             </button>
@@ -429,7 +429,7 @@
                             </button>
                         </div>
                         
-                        <!-- 搜索框 -->
+                        <!-- 搜索�?-->
                         <div class="p-4 border-b border-gray-200">
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -446,7 +446,7 @@
                                 <template x-if="getFilteredMembers().length === 0">
                                     <div class="flex flex-col items-center justify-center py-8 text-gray-400">
                                         <i class="fas fa-user-slash text-4xl mb-3"></i>
-                                        <p>没有找到符合条件的会员</p>
+                                        <p>没有找到符合条件的会�?/p>
                                     </div>
                                 </template>
                                 

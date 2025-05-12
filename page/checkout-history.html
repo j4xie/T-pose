@@ -25,36 +25,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- 自定义样�?-->
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
-        <!-- 顶部工具栏 -->
+        <!-- 顶部工具�?-->
         <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
-            <!-- 左侧: Logo 和模块导航 -->
+            <!-- 左侧: Logo 和模块导�?-->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
-                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <!-- 模块标签 - 可根据当前页面动态高�?-->
                 <nav class="flex space-x-1">
+                    <a href="select-shift.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">
+                        <i class="fas fa-th-large mr-1"></i>功能
+                    </a>
                     <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
                     <a href="checkout-home.html" class="px-4 py-2 rounded bg-gray-100 font-medium">结账</a>
                     <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
                     <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接�?/a>
                 </nav>
             </div>
             
-            <!-- 右侧: 状态区域 -->
+            <!-- 右侧: 状态区�?-->
             <div class="flex items-center space-x-4">
-                <!-- 网络状态 -->
+                <!-- 网络状�?-->
                 <div class="status-icon">
                     <i class="fas fa-wifi text-green-500"></i>
                 </div>
                 
-                <!-- 打印机状态 -->
+                <!-- 打印机状�?-->
                 <div class="status-icon">
                     <i class="fas fa-print text-green-500"></i>
                 </div>
@@ -83,12 +86,12 @@
                              class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
                             <div class="p-3 border-b">
                                 <div class="font-medium">张三</div>
-                                <div class="text-sm text-gray-600">收银员</div>
+                                <div class="text-sm text-gray-600">收银�?/div>
                             </div>
                             <div class="p-2">
                                 <a href="login.html" 
                                    class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                                    退出登录
+                                    退出登�?
                                 </a>
                             </div>
                         </div>
@@ -97,7 +100,7 @@
             </div>
         </header>
         
-        <!-- 主内容区域 -->
+        <!-- 主内容区�?-->
         <main class="flex-1 p-4" x-data="{
             searchQuery: '',
             dateRange: 'today',
@@ -112,17 +115,17 @@
                     checkoutTime: '2023-05-12 14:20', 
                     amount: 295.90,
                     paymentMethod: '微信支付',
-                    customer: { name: '李小明', type: '会员', level: '黄金会员' },
+                    customer: { name: '李小�?, type: '会员', level: '黄金会员' },
                     items: [
                         { name: '宫保鸡丁', quantity: 1, price: 68.00 },
                         { name: '米饭', quantity: 2, price: 5.00 },
                         { name: '可乐', quantity: 1, price: 12.00 },
                         { name: '糖醋排骨', quantity: 1, price: 76.00 },
-                        { name: '拍黄瓜', quantity: 1, price: 28.00 },
+                        { name: '拍黄�?, quantity: 1, price: 28.00 },
                         { name: '水果拼盘', quantity: 1, price: 45.00 },
                         { name: '芝士蛋糕', quantity: 1, price: 30.00 }
                     ],
-                    note: '窗边的座位，客人有小孩'
+                    note: '窗边的座位，客人有小�?
                 },
                 { 
                     id: 'A20230512002', 
@@ -131,8 +134,8 @@
                     area: '包间', 
                     checkoutTime: '2023-05-12 13:45', 
                     amount: 560.00,
-                    paymentMethod: '支付宝',
-                    customer: { name: '普通客户', type: '散客' },
+                    paymentMethod: '支付�?,
+                    customer: { name: '普通客�?, type: '散客' },
                     items: []
                 },
                 { 
@@ -143,7 +146,7 @@
                     checkoutTime: '2023-05-12 13:30', 
                     amount: 1260.00,
                     paymentMethod: '会员余额',
-                    customer: { name: '王小红', type: '会员', level: '白金会员' },
+                    customer: { name: '王小�?, type: '会员', level: '白金会员' },
                     items: []
                 },
                 { 
@@ -154,7 +157,7 @@
                     checkoutTime: '2023-05-11 20:15', 
                     amount: 168.00,
                     paymentMethod: '现金',
-                    customer: { name: '普通客户', type: '散客' },
+                    customer: { name: '普通客�?, type: '散客' },
                     items: []
                 },
                 { 
@@ -165,7 +168,7 @@
                     checkoutTime: '2023-05-11 21:30', 
                     amount: 320.00,
                     paymentMethod: '刷卡',
-                    customer: { name: '普通客户', type: '散客' },
+                    customer: { name: '普通客�?, type: '散客' },
                     items: []
                 }
             ],
@@ -173,7 +176,7 @@
             getFilteredOrders() {
                 let filtered = [...this.orders];
                 
-                // 日期筛选
+                // 日期筛�?
                 if (this.dateRange === 'today') {
                     const today = new Date().toISOString().split('T')[0];
                     filtered = filtered.filter(order => order.checkoutTime.includes(today));
@@ -182,12 +185,12 @@
                     filtered = filtered.filter(order => order.checkoutTime.includes(yesterday));
                 }
                 
-                // 支付方式筛选
+                // 支付方式筛�?
                 if (this.paymentType !== 'all') {
                     filtered = filtered.filter(order => order.paymentMethod.includes(this.paymentType));
                 }
                 
-                // 搜索筛选
+                // 搜索筛�?
                 if (this.searchQuery) {
                     const query = this.searchQuery.toLowerCase();
                     filtered = filtered.filter(order => 
@@ -215,7 +218,7 @@
                 window.location.href = 'checkout-home.html';
             }
         }">
-            <!-- 页面标题与返回按钮 -->
+            <!-- 页面标题与返回按�?-->
             <div class="flex justify-between mb-6">
                 <div class="flex items-center">
                     <a href="checkout-home.html" class="mr-3 p-2 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
@@ -241,20 +244,20 @@
             
             <!-- 主内容区 -->
             <div class="flex gap-4">
-                <!-- 左侧：订单列表 -->
+                <!-- 左侧：订单列�?-->
                 <div class="w-3/5 bg-white rounded-xl p-6 shadow-sm overflow-hidden flex flex-col">
                     <!-- 筛选工具栏 -->
                     <div class="mb-6 flex flex-wrap gap-4">
-                        <!-- 搜索框 -->
+                        <!-- 搜索�?-->
                         <div class="relative flex-grow">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                 <i class="fas fa-search"></i>
                             </span>
-                            <input type="text" placeholder="搜索订单号/桌号/客户" x-model="searchQuery"
+                            <input type="text" placeholder="搜索订单�?桌号/客户" x-model="searchQuery"
                                    class="w-full pl-10 pr-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
                         </div>
                         
-                        <!-- 日期筛选 -->
+                        <!-- 日期筛�?-->
                         <div class="relative">
                             <select x-model="dateRange"
                                     class="appearance-none pl-3 pr-8 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
@@ -262,20 +265,20 @@
                                 <option value="yesterday">昨天</option>
                                 <option value="week">本周</option>
                                 <option value="month">本月</option>
-                                <option value="custom">自定义</option>
+                                <option value="custom">自定�?/option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-gray-400">
                                 <i class="fas fa-chevron-down text-xs"></i>
                             </div>
                         </div>
                         
-                        <!-- 支付方式筛选 -->
+                        <!-- 支付方式筛�?-->
                         <div class="relative">
                             <select x-model="paymentType"
                                     class="appearance-none pl-3 pr-8 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
                                 <option value="all">全部支付方式</option>
                                 <option value="微信">微信支付</option>
-                                <option value="支付宝">支付宝</option>
+                                <option value="支付�?>支付�?/option>
                                 <option value="会员">会员支付</option>
                                 <option value="现金">现金</option>
                                 <option value="刷卡">刷卡</option>
@@ -291,7 +294,7 @@
                         <template x-if="getFilteredOrders().length === 0">
                             <div class="flex flex-col items-center justify-center h-64 text-gray-400">
                                 <i class="fas fa-receipt text-5xl mb-4"></i>
-                                <p>没有找到符合条件的订单</p>
+                                <p>没有找到符合条件的订�?/p>
                             </div>
                         </template>
                         
@@ -316,7 +319,7 @@
                                                 </div>
                                                 <div class="text-sm text-gray-500 mt-1">
                                                     <span x-text="order.table"></span>
-                                                    <span class="mx-1">•</span>
+                                                    <span class="mx-1">�?/span>
                                                     <span x-text="order.area"></span>
                                                 </div>
                                             </div>
@@ -327,7 +330,7 @@
                                         </div>
                                         <div class="mt-3 flex justify-between text-sm">
                                             <div class="text-gray-500">
-                                                <span>收银员: </span>
+                                                <span>收银�? </span>
                                                 <span x-text="order.cashier"></span>
                                             </div>
                                             <div class="text-gray-500" x-text="order.checkoutTime"></div>
@@ -339,7 +342,7 @@
                     </div>
                 </div>
                 
-                <!-- 右侧：订单详情 -->
+                <!-- 右侧：订单详�?-->
                 <div class="w-2/5 bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
                     <!-- 详情标题 -->
                     <div class="p-4 border-b border-gray-200">
@@ -349,7 +352,7 @@
                     <template x-if="!selectedOrder">
                         <div class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400">
                             <i class="fas fa-info-circle text-6xl mb-4"></i>
-                            <p class="text-center">请选择一个订单查看详情</p>
+                            <p class="text-center">请选择一个订单查看详�?/p>
                         </div>
                     </template>
                     
@@ -362,7 +365,7 @@
                                         <h3 class="text-lg font-bold" x-text="selectedOrder.id"></h3>
                                         <div class="text-sm text-gray-500 mt-1">
                                             <span x-text="selectedOrder.table"></span>
-                                            <span class="mx-1">•</span>
+                                            <span class="mx-1">�?/span>
                                             <span x-text="selectedOrder.area"></span>
                                         </div>
                                     </div>
@@ -414,7 +417,7 @@
                                     
                                     <template x-if="selectedOrder.items.length === 0">
                                         <div class="text-center text-gray-400 py-4">
-                                            <p>没有可用的订单明细</p>
+                                            <p>没有可用的订单明�?/p>
                                         </div>
                                     </template>
                                 </div>
@@ -438,7 +441,7 @@
                                         <span x-text="selectedOrder.checkoutTime"></span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-500">收银员</span>
+                                        <span class="text-gray-500">收银�?/span>
                                         <span x-text="selectedOrder.cashier"></span>
                                     </div>
                                     <div class="flex justify-between">

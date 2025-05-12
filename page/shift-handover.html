@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交接班 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#333333',       // 深灰/黑色
+                        secondary: '#FECB8B',     // 杏色/浅橙色
+                        accent: '#F7332D',        // 红色
+                        background: '#F5F5F5',
+                        'accent-light': '#FF6B66',
+                        'secondary-light': '#FDD9AD',
+                        'primary-dark': '#191919'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="select-shift.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">
+                        <i class="fas fa-th-large mr-1"></i>功能
+                    </a>
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded bg-accent/10 font-medium text-accent">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover border-2 border-secondary">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-secondary/20 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="{
+            showConfirmModal: false,
+            totalSales: 5680.50,
+            cashSales: 1250.00,
+            wechatSales: 2380.50,
+            alipayPayments: 2050.00,
+            orders: 28,
+            averageBill: 5680.50 / 28,
+            startTime: '08:00',
+            endTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            cashier: '张三',
+            handoverNotes: ''
+        }">
+            <!-- 页面标题 -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">交接班</h1>
+                <button @click="showConfirmModal = true" class="px-5 py-2 bg-accent hover:bg-accent-light text-white rounded-lg flex items-center">
+                    <i class="fas fa-exchange-alt mr-2"></i>
+                    确认交接班
+                </button>
+            </div>
+            
+            <!-- 交接班数据 -->
+            <div class="grid grid-cols-12 gap-6">
+                <!-- 左侧：交接班主要数据 -->
+                <div class="col-span-7">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-semibold mb-4">营业数据统计</h2>
+                        
+                        <!-- 工作信息 -->
+                        <div class="mb-6">
+                            <div class="grid grid-cols-3 gap-4 mb-4">
+                                <div class="bg-secondary/10 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-500 mb-1">工作人员</div>
+                                    <div class="font-medium" x-text="cashier"></div>
+                                </div>
+                                <div class="bg-secondary/10 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-500 mb-1">开始时间</div>
+                                    <div class="font-medium" x-text="startTime"></div>
+                                </div>
+                                <div class="bg-secondary/10 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-500 mb-1">结束时间</div>
+                                    <div class="font-medium" x-text="endTime"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 营业额卡片 -->
+                        <div class="bg-accent/10 p-5 rounded-lg mb-6">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">总营业额</div>
+                                    <div class="text-2xl font-bold text-accent" x-text="'¥' + totalSales.toFixed(2)"></div>
+                                </div>
+                                <i class="fas fa-chart-line text-accent text-3xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- 支付方式卡片 -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-secondary/10 p-4 rounded-lg">
+                                <div class="flex items-center mb-3">
+                                    <i class="fas fa-money-bill-wave text-green-500 mr-2"></i>
+                                    <div class="text-sm">现金支付</div>
+                                </div>
+                                <div class="text-lg font-semibold" x-text="'¥' + cashSales.toFixed(2)"></div>
+                                <div class="text-xs text-gray-500 mt-1" x-text="'占比 ' + Math.round(cashSales / totalSales * 100) + '%'"></div>
+                            </div>
+                            
+                            <div class="bg-secondary/10 p-4 rounded-lg">
+                                <div class="flex items-center mb-3">
+                                    <i class="fab fa-weixin text-green-500 mr-2"></i>
+                                    <div class="text-sm">微信支付</div>
+                                </div>
+                                <div class="text-lg font-semibold" x-text="'¥' + wechatSales.toFixed(2)"></div>
+                                <div class="text-xs text-gray-500 mt-1" x-text="'占比 ' + Math.round(wechatSales / totalSales * 100) + '%'"></div>
+                            </div>
+                            
+                            <div class="bg-secondary/10 p-4 rounded-lg">
+                                <div class="flex items-center mb-3">
+                                    <i class="fab fa-alipay text-blue-500 mr-2"></i>
+                                    <div class="text-sm">支付宝</div>
+                                </div>
+                                <div class="text-lg font-semibold" x-text="'¥' + alipayPayments.toFixed(2)"></div>
+                                <div class="text-xs text-gray-500 mt-1" x-text="'占比 ' + Math.round(alipayPayments / totalSales * 100) + '%'"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 其他统计数据 -->
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="bg-secondary/10 p-4 rounded-lg">
+                                <div class="text-sm text-gray-500 mb-1">订单数量</div>
+                                <div class="text-lg font-semibold" x-text="orders + ' 笔'"></div>
+                            </div>
+                            
+                            <div class="bg-secondary/10 p-4 rounded-lg">
+                                <div class="text-sm text-gray-500 mb-1">客单价</div>
+                                <div class="text-lg font-semibold" x-text="'¥' + (totalSales / orders).toFixed(2)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：交接班单据 -->
+                <div class="col-span-5">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-semibold mb-4">交接班备�?/h2>
+                        
+                        <div class="form-group mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">备注信息</label>
+                            <textarea x-model="handoverNotes" rows="4" placeholder="请输入交接班需要注意的事项..."
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"></textarea>
+                        </div>
+                        
+                        <div class="form-group mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">交接单据预览</label>
+                            
+                            <div class="border border-gray-300 rounded-lg p-4 bg-white">
+                                <div class="text-center border-b pb-2 mb-4">
+                                    <h3 class="font-semibold">T-Order 餐厅 - 交接班单�?/h3>
+                                    <div class="text-xs text-gray-500 mt-1" x-text="new Date().toLocaleDateString() + ' ' + startTime + '-' + endTime"></div>
+                                </div>
+                                
+                                <div class="space-y-3 text-sm mb-4">
+                                    <div class="flex justify-between">
+                                        <span>收银�?</span>
+                                        <span x-text="cashier"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>营业额总计:</span>
+                                        <span x-text="'¥' + totalSales.toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>现金收款:</span>
+                                        <span x-text="'¥' + cashSales.toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>微信支付:</span>
+                                        <span x-text="'¥' + wechatSales.toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>支付�?</span>
+                                        <span x-text="'¥' + alipayPayments.toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>订单笔数:</span>
+                                        <span x-text="orders + ' 笔'"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>客单�?</span>
+                                        <span x-text="'¥' + (totalSales / orders).toFixed(2)"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t pt-3 text-sm" x-show="handoverNotes">
+                                    <div class="font-medium">备注:</div>
+                                    <p class="mt-1 whitespace-pre-line" x-text="handoverNotes"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+                                <i class="fas fa-print mr-2"></i>
+                                打印交接�?
+                            </button>
+                            <button @click="showConfirmModal = true" class="px-4 py-2 bg-accent hover:bg-accent-light text-white rounded-lg">
+                                确认交接班
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 交接班确认弹�?-->
+            <div x-show="showConfirmModal" class="fixed inset-0 flex items-center justify-center z-50" style="background-color: rgba(0,0,0,0.5);">
+                <div class="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-exchange-alt text-accent text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">确认交接班</h3>
+                        <p class="text-gray-500 mt-2">交接班后当前营业数据将被归档，您将退出当前工作</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">总营业额:</span>
+                            <span class="font-semibold" x-text="'¥' + totalSales.toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">收银�?</span>
+                            <span class="font-semibold" x-text="cashier"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button @click="showConfirmModal = false" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            取消
+                        </button>
+                        <button onclick="window.location.href='select-shift.html'" class="flex-1 px-4 py-3 bg-accent hover:bg-accent-light text-white rounded-lg">
+                            确认交接
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 主应用脚?-->
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

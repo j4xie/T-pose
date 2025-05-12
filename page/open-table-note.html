@@ -25,36 +25,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- 自定义样�?-->
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col bg-gray-100">
-        <!-- 顶部工具栏 -->
+        <!-- 顶部工具�?-->
         <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
-            <!-- 左侧: Logo 和模块导航 -->
+            <!-- 左侧: Logo 和模块导�?-->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
-                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <!-- 模块标签 - 可根据当前页面动态高�?-->
                 <nav class="flex space-x-1">
                     <a href="table-map-A.html" class="px-4 py-2 rounded bg-gray-100 font-medium">餐位</a>
                     <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
                     <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
                     <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接�?/a>
                 </nav>
             </div>
             
-            <!-- 右侧: 状态区域 -->
+            <!-- 右侧: 状态区�?-->
             <div class="flex items-center space-x-4">
-                <!-- 网络状态 -->
+                <!-- 网络状�?-->
                 <div class="status-icon">
                     <i class="fas fa-wifi text-green-500"></i>
                 </div>
                 
-                <!-- 打印机状态 -->
+                <!-- 打印机状�?-->
                 <div class="status-icon">
                     <i class="fas fa-print text-green-500"></i>
                 </div>
@@ -83,12 +83,12 @@
                              class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
                             <div class="p-3 border-b">
                                 <div class="font-medium">张三</div>
-                                <div class="text-sm text-gray-600">收银员</div>
+                                <div class="text-sm text-gray-600">收银�?/div>
                             </div>
                             <div class="p-2">
                                 <a href="login.html" 
                                    class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                                    退出登录
+                                    退出登�?
                                 </a>
                             </div>
                         </div>
@@ -97,16 +97,16 @@
             </div>
         </header>
         
-        <!-- 主内容区域 -->
+        <!-- 主内容区�?-->
         <main class="flex-1 p-4 flex items-center justify-center" x-data="{
-            orderNote: '窗边的座位，客人有小孩',
+            orderNote: '窗边的座位，客人有小�?,
             commonNotes: [
-                '不要辣', '少放盐', '不要葱姜蒜', '不要香菜', 
-                '打包', '准备儿童餐具', '准备婴儿椅',
-                '过敏请注意', '窗边座位', '禁忌猪肉', '禁忌海鲜'
+                '不要�?, '少放�?, '不要葱姜�?, '不要香菜', 
+                '打包', '准备儿童餐具', '准备婴儿�?,
+                '过敏请注�?, '窗边座位', '禁忌猪肉', '禁忌海鲜'
             ],
             saveNote() {
-                // 跳转回点菜页面
+                // 跳转回点菜页�?
                 window.location.href = 'open-table-selected.html';
             }
         }">
@@ -118,18 +118,18 @@
                         <div class="flex items-center text-sm text-gray-500">
                             <span>1号桌</span>
                             <span class="mx-2">|</span>
-                            <span>4个座位</span>
+                            <span>4个座�?/span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 备注输入区 -->
+                <!-- 备注输入�?-->
                 <div class="p-6">
                     <div class="mb-6">
                         <label for="note" class="block text-sm font-medium mb-2">整单备注</label>
                         <textarea id="note" x-model="orderNote"
                                   class="w-full h-40 p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
-                                  placeholder="请输入整单备注信息..."></textarea>
+                                  placeholder="请输入整单备注信�?.."></textarea>
                     </div>
                     
                     <!-- 常用备注快捷选择 -->
@@ -137,7 +137,7 @@
                         <h3 class="text-sm font-medium mb-3">常用备注</h3>
                         <div class="flex flex-wrap gap-2">
                             <template x-for="note in commonNotes" :key="note">
-                                <button @click="orderNote = orderNote ? orderNote + '，' + note : note"
+                                <button @click="orderNote = orderNote ? orderNote + '�? + note : note"
                                         class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition">
                                     <span x-text="note"></span>
                                 </button>
@@ -160,7 +160,7 @@
                 
                 <!-- 底部提示 -->
                 <div class="p-4 bg-gray-100 border-t border-gray-200 text-center text-sm text-gray-500">
-                    <p>备注内容将打印在厨房小票上，请确保备注清晰明了</p>
+                    <p>备注内容将打印在厨房小票上，请确保备注清晰明�?/p>
                 </div>
             </div>
         </main>

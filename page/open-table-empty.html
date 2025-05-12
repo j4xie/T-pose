@@ -21,12 +21,14 @@
     </script>
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome - 更新为更稳定的版本 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css" crossorigin="anonymous">
+    <!-- 备用加载方式 -->
+    <script defer src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
@@ -35,7 +37,7 @@
             <!-- 左侧: Logo 和模块导航 -->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
                 <!-- 模块标签 - 可根据当前页面动态高亮 -->
                 <nav class="flex space-x-1">
@@ -110,7 +112,7 @@
                         <div class="text-sm text-gray-500 flex items-center">
                             <i class="fas fa-chair mr-1"></i> 4个座位
                             <span class="mx-2">|</span>
-                            <i class="far fa-clock mr-1"></i> 开台时间: 12:30
+                            <i class="far fa-clock mr-1"></i> 开台时间 12:30
                         </div>
                     </div>
                 </div>
@@ -154,7 +156,7 @@
                         </template>
                     </div>
                     
-                    <!-- 搜索框 -->
+                    <!-- 搜索栏 -->
                     <div class="mb-4">
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -247,7 +249,7 @@
     </div>
     
     <!-- 主应用脚本 -->
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('orderSystem', () => ({

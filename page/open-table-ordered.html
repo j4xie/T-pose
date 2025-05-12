@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>开台 - T-Order POS系统</title>
+    <title>开�?- T-Order POS系统</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,28 +25,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- 自定义样�?-->
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
-        <!-- 顶部工具栏 -->
+        <!-- 顶部工具�?-->
         <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
-            <!-- 左侧: Logo 和模块导航 -->
+            <!-- 左侧: Logo 和模块导�?-->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
                 <nav class="flex space-x-1">
                     <a href="table-map-A.html" class="px-4 py-2 rounded bg-gray-100 font-medium">餐位</a>
                     <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
                     <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
                     <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接�?/a>
                 </nav>
             </div>
             
-            <!-- 右侧: 状态区域 -->
+            <!-- 右侧: 状态区�?-->
             <div class="flex items-center space-x-4">
                 <div class="status-icon">
                     <i class="fas fa-wifi text-green-500"></i>
@@ -71,11 +71,11 @@
                              class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
                             <div class="p-3 border-b">
                                 <div class="font-medium">张三</div>
-                                <div class="text-sm text-gray-600">收银员</div>
+                                <div class="text-sm text-gray-600">收银�?/div>
                             </div>
                             <div class="p-2">
                                 <a href="login.html" class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                                    退出登录
+                                    退出登�?
                                 </a>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
             </div>
         </header>
         
-        <!-- 主内容区域 -->
+        <!-- 主内容区�?-->
         <main class="flex-1 p-4" x-data="orderSystem">
             <!-- 顶部桌台信息 -->
             <div class="bg-white rounded-xl p-4 mb-4 shadow-sm flex justify-between items-center">
@@ -95,18 +95,18 @@
                     <div>
                         <h2 class="text-xl font-bold">1号桌</h2>
                         <div class="text-sm text-gray-500 flex items-center">
-                            <i class="fas fa-chair mr-1"></i> 4个座位
+                            <i class="fas fa-chair mr-1"></i> 4个座�?
                             <span class="mx-2">|</span>
-                            <i class="far fa-clock mr-1"></i> 开台时间: 12:30
+                            <i class="far fa-clock mr-1"></i> 开台时�? 12:30
                             <span class="mx-2">|</span>
-                            <span class="text-accent font-medium">已下单</span>
+                            <span class="text-accent font-medium">已下�?/span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
                     <div class="flex items-center space-x-2 border border-gray-200 rounded-lg px-3 py-2">
-                        <span class="text-sm text-gray-600">就餐人数: 3人</span>
+                        <span class="text-sm text-gray-600">就餐人数: 3�?/span>
                     </div>
                     <a href="table-map-A.html" class="btn-secondary px-4 py-2 rounded-lg flex items-center">
                         <i class="fas fa-arrow-left mr-1"></i> 返回
@@ -114,14 +114,14 @@
                 </div>
             </div>
             
-            <!-- 主体内容区 -->
+            <!-- 主体内容�?-->
             <div class="flex gap-4 h-[calc(100vh-200px)]">
-                <!-- 左侧菜单选择区 -->
+                <!-- 左侧菜单选择�?-->
                 <div class="w-3/5 bg-white rounded-xl p-4 shadow-sm overflow-hidden flex flex-col">
                     <!-- 订单状态指示器 -->
                     <div class="bg-green-50 text-green-700 rounded-lg p-3 mb-4 flex items-center">
                         <i class="fas fa-check-circle mr-2"></i>
-                        <span>订单已成功下单，厨房正在准备中</span>
+                        <span>订单已成功下单，厨房正在准备�?/span>
                     </div>
                 
                     <!-- 菜品分类标签 -->
@@ -137,7 +137,7 @@
                         </template>
                     </div>
                     
-                    <!-- 搜索框 -->
+                    <!-- 搜索�?-->
                     <div class="mb-4">
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -165,7 +165,7 @@
                                             <i class="fas fa-check text-xs"></i>
                                         </div>
                                         <div x-show="dish.soldOut" class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                                            <span class="px-2 py-1 bg-gray-800 text-white text-sm rounded">已沽清</span>
+                                            <span class="px-2 py-1 bg-gray-800 text-white text-sm rounded">已沽�?/span>
                                         </div>
                                     </div>
                                     <div class="p-3">
@@ -185,21 +185,21 @@
                     </div>
                 </div>
                 
-                <!-- 右侧订单区 -->
+                <!-- 右侧订单�?-->
                 <div class="w-2/5 bg-white rounded-xl shadow-sm flex flex-col overflow-hidden">
                     <!-- 订单标题 -->
                     <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-bold">已下单菜品 <span class="text-sm font-normal text-gray-500">(<span x-text="orderedItems.length"></span>个菜品)</span></h3>
+                        <h3 class="font-bold">已下单菜�?<span class="text-sm font-normal text-gray-500">(<span x-text="orderedItems.length"></span>个菜�?</span></h3>
                         <div class="text-sm">
                             <span class="text-gray-500">订单编号:</span>
                             <span class="font-medium">A20230512001</span>
                         </div>
                     </div>
                     
-                    <!-- 已下单菜品列表 -->
+                    <!-- 已下单菜品列�?-->
                     <div class="p-4 bg-yellow-50 border-b border-yellow-100">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-medium text-yellow-800">已下单菜品</h4>
+                            <h4 class="font-medium text-yellow-800">已下单菜�?/h4>
                             <span class="text-sm text-yellow-700">12:35下单</span>
                         </div>
                     </div>
@@ -219,10 +219,10 @@
                                         </div>
                                         <div class="text-sm mt-1">
                                             <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs" x-show="item.status === 'cooking'">
-                                                <i class="fas fa-fire mr-1"></i> 烹饪中
+                                                <i class="fas fa-fire mr-1"></i> 烹饪�?
                                             </span>
                                             <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs" x-show="item.status === 'ready'">
-                                                <i class="fas fa-check mr-1"></i> 已上菜
+                                                <i class="fas fa-check mr-1"></i> 已上�?
                                             </span>
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                         </template>
                     </div>
                     
-                    <!-- 新增菜品区 -->
+                    <!-- 新增菜品�?-->
                     <div class="p-4 bg-green-50 border-t border-green-100 border-b border-gray-200">
                         <div class="flex justify-between items-center">
                             <h4 class="font-medium text-green-800">新增菜品</h4>
@@ -288,12 +288,12 @@
                         </template>
                     </div>
                     
-                    <!-- 订单底部操作区 -->
+                    <!-- 订单底部操作�?-->
                     <div class="p-4 bg-gray-50 border-t border-gray-200">
                         <!-- 订单总计 -->
                         <div class="mb-6">
                             <div class="flex justify-between text-sm text-gray-600 mb-1">
-                                <span>已下单</span>
+                                <span>已下�?/span>
                                 <span x-text="'¥' + getOrderedTotal().toFixed(2)"></span>
                             </div>
                             <div class="flex justify-between text-sm text-green-600 mb-1">
@@ -334,7 +334,7 @@
                 dishes: [],
                 orderedItems: [
                     {id: 1, name: '宫保鸡丁', price: 68, quantity: 1, status: 'cooking', note: ''},
-                    {id: 11, name: '米饭', price: 5, quantity: 2, status: 'ready', note: '少放葱'},
+                    {id: 11, name: '米饭', price: 5, quantity: 2, status: 'ready', note: '少放�?},
                     {id: 16, name: '可乐', price: 12, quantity: 1, status: 'ready', note: '加冰'}
                 ],
                 newItems: [],
@@ -345,12 +345,12 @@
                 
                 generateDishes() {
                     const dishNames = [
-                        '宫保鸡丁', '水煮鱼', '麻婆豆腐', '鱼香肉丝', '糖醋排骨',
-                        '拍黄瓜', '皮蛋豆腐', '凉拌木耳', '龙井虾仁', '手撕包菜',
+                        '宫保鸡丁', '水煮�?, '麻婆豆腐', '鱼香肉丝', '糖醋排骨',
+                        '拍黄�?, '皮蛋豆腐', '凉拌木�?, '龙井虾仁', '手撕包菜',
                         '米饭', '蒸饺', '馒头', '炒饭', '炒面',
-                        '可乐', '雪碧', '果汁', '柠檬水', '矿泉水',
-                        '啤酒', '红酒', '白酒', '鸡尾酒', '威士忌',
-                        '提拉米苏', '芝士蛋糕', '冰淇淋', '水果拼盘', '布丁'
+                        '可乐', '雪碧', '果汁', '柠檬�?, '矿泉�?,
+                        '啤酒', '红酒', '白酒', '鸡尾�?, '威士�?,
+                        '提拉米苏', '芝士蛋糕', '冰淇�?, '水果拼盘', '布丁'
                     ];
                     
                     this.dishes = dishNames.map((name, index) => ({
@@ -412,7 +412,7 @@
                     if (this.newItems.length === 0) return;
                     
                     // 模拟加菜请求成功
-                    alert('加菜成功！');
+                    alert('加菜成功�?);
                     
                     // 将新菜品添加到已下单列表
                     this.newItems.forEach(item => {
@@ -422,7 +422,7 @@
                         });
                     });
                     
-                    // 清空新菜品列表
+                    // 清空新菜品列�?
                     this.newItems = [];
                 }
             }));

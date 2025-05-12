@@ -11,9 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#191919',
-                        accent: '#F7332D',
+                        primary: '#333333',       // 深灰/黑色
+                        secondary: '#FECB8B',     // 杏色/浅橙色
+                        accent: '#F7332D',        // 红色
                         background: '#F5F5F5',
+                        'accent-light': '#FF6B66',
+                        'secondary-light': '#FDD9AD',
+                        'primary-dark': '#191919'
                     }
                 }
             }
@@ -26,24 +30,24 @@
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
         <!-- 顶部工具栏 - 根据需要条件显示 -->
-        <header x-data="{ showHeader: true }" x-show="showHeader" class="header-toolbar flex justify-between items-center px-4 py-2 h-16">
+        <header x-data="{ showHeader: true }" x-show="showHeader" class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
             <!-- 左侧: Logo 和模块导航 -->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
                 <!-- 模块标签 - 可根据当前页面动态高亮 -->
                 <nav class="flex space-x-1">
-                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
-                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
-                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
-                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">交接班</a>
                 </nav>
             </div>
             
@@ -69,7 +73,7 @@
                 </div>
                 
                 <!-- 班次 -->
-                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                <div class="shift-info px-2 py-1 bg-secondary/30 rounded text-sm">
                     <span x-text="$store.app.currentShift || '未选班'"></span>
                 </div>
                 
@@ -77,7 +81,7 @@
                 <div class="user-avatar" x-data="{ showDropdown: false }">
                     <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
                         <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
-                             class="h-8 w-8 rounded-full object-cover">
+                             class="h-8 w-8 rounded-full object-cover border-2 border-secondary">
                         
                         <!-- 下拉菜单 -->
                         <div x-show="showDropdown" 
@@ -89,7 +93,7 @@
                             </div>
                             <div class="p-2">
                                 <a href="#" @click="$store.app.logout()" 
-                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                   class="block px-4 py-2 text-sm hover:bg-secondary/20 rounded">
                                     退出登录
                                 </a>
                             </div>
@@ -109,6 +113,6 @@
     </div>
     
     <!-- 主应用脚本 -->
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html> 

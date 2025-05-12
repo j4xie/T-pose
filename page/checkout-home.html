@@ -11,9 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#191919',
-                        accent: '#F7332D',
+                        primary: '#333333',       // 深灰/黑色
+                        secondary: '#FECB8B',     // 杏色/浅橙色
+                        accent: '#F7332D',        // 红色
                         background: '#F5F5F5',
+                        'accent-light': '#FF6B66',
+                        'secondary-light': '#FDD9AD',
+                        'primary-dark': '#191919'
                     }
                 }
             }
@@ -26,7 +30,7 @@
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
@@ -35,15 +39,18 @@
             <!-- 左侧: Logo 和模块导航 -->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
                 <!-- 模块标签 - 可根据当前页面动态高亮 -->
                 <nav class="flex space-x-1">
-                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
-                    <a href="checkout-home.html" class="px-4 py-2 rounded bg-gray-100 font-medium">结账</a>
-                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
-                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="select-shift.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">
+                        <i class="fas fa-th-large mr-1"></i>功能
+                    </a>
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded bg-accent/10 font-medium text-accent">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">交接班</a>
                 </nav>
             </div>
             
@@ -67,7 +74,7 @@
                 </div>
                 
                 <!-- 班次 -->
-                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                <div class="shift-info px-2 py-1 bg-secondary/30 rounded text-sm">
                     <span>早班</span>
                 </div>
                 
@@ -75,7 +82,7 @@
                 <div class="user-avatar" x-data="{ showDropdown: false }">
                     <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
                         <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
-                             class="h-8 w-8 rounded-full object-cover">
+                             class="h-8 w-8 rounded-full object-cover border-2 border-secondary">
                         
                         <!-- 下拉菜单 -->
                         <div x-show="showDropdown" 
@@ -87,7 +94,7 @@
                             </div>
                             <div class="p-2">
                                 <a href="login.html" 
-                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                   class="block px-4 py-2 text-sm hover:bg-secondary/20 rounded">
                                     退出登录
                                 </a>
                             </div>
@@ -150,7 +157,7 @@
                     
                     <!-- 历史订单按钮 -->
                     <button @click="viewCheckoutHistory()" 
-                            class="px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center">
+                            class="px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-secondary/10 flex items-center">
                         <i class="fas fa-history mr-2"></i>
                         <span>已结账单</span>
                     </button>
@@ -180,7 +187,7 @@
                                      :class="{
                                          'table-item bg-white border-2 rounded-xl p-5 cursor-pointer transition': true,
                                          'border-accent shadow-md': selectedTable && selectedTable.id === table.id,
-                                         'border-gray-200 hover:border-gray-300': !selectedTable || selectedTable.id !== table.id
+                                         'border-gray-200 hover:border-secondary': !selectedTable || selectedTable.id !== table.id
                                      }">
                                     <div class="flex justify-between">
                                         <h3 class="text-lg font-bold" x-text="table.name"></h3>
@@ -197,7 +204,7 @@
                                             </div>
                                             <div>
                                                 <i class="fas fa-users mr-1"></i>
-                                                <span x-text="table.people + ' 人'"></span>
+                                                <span x-text="table.people + ' 人'></span>
                                             </div>
                                         </div>
                                         
@@ -248,8 +255,8 @@
                                         <h3 class="text-lg font-bold" x-text="selectedTable.name"></h3>
                                         <div class="text-sm text-gray-500 mt-1">
                                             <span x-text="selectedTable.area"></span>
-                                            <span class="mx-1">•</span>
-                                            <span x-text="selectedTable.people + ' 人'"></span>
+                                            <span class="mx-1">人</span>
+                                            <span x-text="selectedTable.people + ' 人'></span>
                                         </div>
                                     </div>
                                     <div>
@@ -262,12 +269,12 @@
                                 <div class="mt-3 flex justify-between text-sm text-gray-500">
                                     <div>
                                         <i class="far fa-clock mr-1"></i>
-                                        <span>开台时间: </span>
+                                        <span>开台时间 </span>
                                         <span x-text="selectedTable.openTime"></span>
                                     </div>
                                     <div>
                                         <i class="fas fa-hourglass-half mr-1"></i>
-                                        <span>用餐时长: 1小时20分</span>
+                                        <span>用餐时长: 1小时20分钟</span>
                                     </div>
                                 </div>
                             </div>
@@ -324,7 +331,7 @@
                                         <span x-text="'¥' + selectedTable.orderTotal.toFixed(2)"></span>
                                     </div>
                                     <div class="flex justify-between text-sm">
-                                        <span>服务费 (10%)</span>
+                                        <span>服务费(10%)</span>
                                         <span x-text="'¥' + (selectedTable.orderTotal * 0.1).toFixed(2)"></span>
                                     </div>
                                     <div class="flex justify-between font-bold">

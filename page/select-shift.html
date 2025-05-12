@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>选择工作 - T-Order POS系统</title>
+    <title>功能选择 - T-Order POS系统</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,9 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#191919',
-                        accent: '#F7332D',
+                        primary: '#333333',       // 深灰/黑色
+                        secondary: '#FECB8B',     // 杏色/浅橙色
+                        accent: '#F7332D',        // 红色
                         background: '#F5F5F5',
+                        'accent-light': '#FF6B66',
+                        'secondary-light': '#FDD9AD',
+                        'primary-dark': '#191919'
                     }
                 }
             }
@@ -26,116 +30,68 @@
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="shift-selector-container" x-data="{
-            selectedShift: null,
-            shifts: [
-                { id: 1, name: '早班', time: '07:00-15:00', isActive: true, employeeCount: 5 },
-                { id: 2, name: '中班', time: '15:00-23:00', isActive: true, employeeCount: 6 },
-                { id: 3, name: '夜班', time: '23:00-07:00', isActive: true, employeeCount: 3 },
-                { id: 4, name: '全天班', time: '00:00-24:00', isActive: false, employeeCount: 0 }
-            ],
-            confirmSelection() {
-                if (!this.selectedShift) return;
-                
-                // 模拟设置班次，实际中这里会有API调用
-                localStorage.setItem('currentShift', this.selectedShift.name);
-                
-                // 跳转到餐位图页面
-                window.location.href = 'table-map-A.html';
-            }
+        <div class="function-selector-container" x-data="{
+            functions: [
+                { id: 1, name: '收银', icon: 'fa-cash-register', url: 'checkout-home.html', color: 'bg-accent bg-opacity-10' },
+                { id: 2, name: '快速收银', icon: 'fa-bolt', url: 'checkout-home.html', color: 'bg-secondary bg-opacity-20' },
+                { id: 3, name: '预定', icon: 'fa-calendar-check', url: 'table-map-A.html', color: 'bg-accent bg-opacity-10' },
+                { id: 4, name: '收银设置', icon: 'fa-cog', url: 'checkout-settings.html', color: 'bg-secondary bg-opacity-20' },
+                { id: 5, name: '站点设置', icon: 'fa-store-alt', url: 'site-settings.html', color: 'bg-accent bg-opacity-10' },
+                { id: 6, name: '交接班', icon: 'fa-exchange-alt', url: 'shift-handover.html', color: 'bg-secondary bg-opacity-20' }
+            ]
         }">
             <div class="w-[720px] bg-white rounded-xl shadow-xl overflow-hidden">
                 <!-- 头部区域 -->
-                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-white via-white to-secondary/5">
                     <div class="flex items-center">
-                        <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10 mr-3">
+                        <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10 mr-3">
                         <div>
-                            <h1 class="text-xl font-bold">T-Order POS系统</h1>
-                            <p class="text-sm text-gray-500">选择工作班次</p>
+                            <h1 class="text-xl font-bold text-primary-dark">T-Order POS系统</h1>
+                            <p class="text-sm text-gray-500">选择功能</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-600">张三</span>
-                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                        <span class="text-sm text-gray-600">店铺名称</span>
+                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-secondary">
                             <img src="https://source.unsplash.com/random/100x100/?portrait" alt="User Avatar" class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
                 
-                <!-- 班次选择区域 -->
+                <!-- 功能选择区域 -->
                 <div class="p-8">
-                    <div class="grid grid-cols-2 gap-6">
-                        <template x-for="shift in shifts" :key="shift.id">
-                            <div @click="selectedShift = shift.isActive ? shift : null"
-                                 :class="{
-                                     'bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer transition-all': true,
-                                     'border-accent': selectedShift && selectedShift.id === shift.id,
-                                     'opacity-60 cursor-not-allowed': !shift.isActive
-                                 }">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="text-lg font-bold" x-text="shift.name"></h3>
-                                        <div class="mt-1 text-gray-500 flex items-center">
-                                            <i class="far fa-clock mr-2"></i>
-                                            <span x-text="shift.time"></span>
-                                        </div>
-                                    </div>
-                                    <div x-show="selectedShift && selectedShift.id === shift.id" 
-                                         class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center">
-                                        <i class="fas fa-check text-xs"></i>
-                                    </div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <template x-for="func in functions" :key="func.id">
+                            <a :href="func.url" class="bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer transition-all flex flex-col items-center justify-center hover:border-accent hover:shadow-md group">
+                                <div :class="'w-16 h-16 rounded-full ' + func.color + ' flex items-center justify-center mb-4 group-hover:bg-accent group-hover:bg-opacity-100 transition-colors'">
+                                    <i :class="'fas ' + func.icon" class="text-2xl text-gray-700 group-hover:text-white transition-colors"></i>
                                 </div>
-                                
-                                <div class="mt-4 flex items-center" x-show="shift.isActive">
-                                    <div class="mr-3 text-sm text-gray-500 flex items-center">
-                                        <i class="fas fa-user-friends mr-1"></i>
-                                        <span x-text="shift.employeeCount"></span> 人工作中
-                                    </div>
-                                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                                        可加入
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-4" x-show="!shift.isActive">
-                                    <div class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                                        当前不可用
-                                    </div>
-                                </div>
-                            </div>
+                                <h3 class="text-lg font-bold text-center" x-text="func.name"></h3>
+                            </a>
                         </template>
                     </div>
                     
                     <!-- 按钮区域 -->
                     <div class="mt-8 flex justify-end space-x-4">
+                        <button onclick="window.location.href='table-map-A.html'" 
+                                class="px-6 py-3 bg-secondary text-primary-dark rounded-lg hover:bg-secondary-light transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+                            进入系统
+                        </button>
                         <button onclick="window.location.href='login.html'" 
                                 class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300">
-                            返回
-                        </button>
-                        <button @click="confirmSelection" 
-                                :disabled="!selectedShift"
-                                :class="{
-                                    'px-6 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent': true,
-                                    'bg-accent hover:bg-red-600 active:bg-red-700 text-white': selectedShift,
-                                    'bg-gray-200 text-gray-400 cursor-not-allowed': !selectedShift
-                                }">
-                            确认选择
+                            退出登录
                         </button>
                     </div>
-                </div>
-                
-                <!-- 底部提示信息 -->
-                <div class="p-4 bg-gray-50 text-center text-sm text-gray-500">
-                    <p>键盘快捷键: 使用 <kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs">1</kbd> - <kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs">4</kbd> 选择班次，<kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs">Enter</kbd> 确认</p>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- 主应用脚本 -->
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html> 

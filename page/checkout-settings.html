@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收银设置 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样�?-->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具�?-->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导�?-->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高�?-->
+                <nav class="flex space-x-1">
+                    <a href="select-shift.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">
+                        <i class="fas fa-th-large mr-1"></i>功能
+                    </a>
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="checkout-settings.html" class="px-4 py-2 rounded bg-gray-100 font-medium">收银设置</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区�?-->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状�?-->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状�?-->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银�?/div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登�?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区�?-->
+        <main class="flex-1 p-4" x-data="{
+            activeTab: 'payment'
+        }">
+            <!-- 页面标题 -->
+            <div class="flex justify-between mb-6">
+                <h1 class="text-2xl font-bold">收银设置</h1>
+            </div>
+            
+            <!-- 设置选项�?-->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <!-- 选项卡导�?-->
+                <div class="flex border-b border-gray-200">
+                    <button @click="activeTab = 'payment'" 
+                            :class="{ 'border-b-2 border-accent text-accent': activeTab === 'payment', 'text-gray-600': activeTab !== 'payment' }" 
+                            class="flex-1 py-4 font-medium text-center focus:outline-none transition-colors">
+                        <i class="fas fa-credit-card mr-2"></i>支付方式
+                    </button>
+                    <button @click="activeTab = 'receipt'" 
+                            :class="{ 'border-b-2 border-accent text-accent': activeTab === 'receipt', 'text-gray-600': activeTab !== 'receipt' }" 
+                            class="flex-1 py-4 font-medium text-center focus:outline-none transition-colors">
+                        <i class="fas fa-receipt mr-2"></i>小票设置
+                    </button>
+                    <button @click="activeTab = 'discount'" 
+                            :class="{ 'border-b-2 border-accent text-accent': activeTab === 'discount', 'text-gray-600': activeTab !== 'discount' }" 
+                            class="flex-1 py-4 font-medium text-center focus:outline-none transition-colors">
+                        <i class="fas fa-percent mr-2"></i>折扣管理
+                    </button>
+                    <button @click="activeTab = 'taxes'" 
+                            :class="{ 'border-b-2 border-accent text-accent': activeTab === 'taxes', 'text-gray-600': activeTab !== 'taxes' }" 
+                            class="flex-1 py-4 font-medium text-center focus:outline-none transition-colors">
+                        <i class="fas fa-file-invoice-dollar mr-2"></i>税率设置
+                    </button>
+                </div>
+                
+                <!-- 选项卡内�?-->
+                <div class="p-6">
+                    <!-- 支付方式设置 -->
+                    <div x-show="activeTab === 'payment'">
+                        <h2 class="text-xl font-semibold mb-4">支付方式设置</h2>
+                        
+                        <div class="space-y-4">
+                            <!-- 启用的支付方�?-->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="font-medium mb-3">已启用的支付方式</h3>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-money-bill-wave text-green-500 text-xl mr-3"></i>
+                                            <span class="font-medium">现金支付</span>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-weixin text-green-500 text-xl mr-3"></i>
+                                            <span class="font-medium">微信支付</span>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-alipay text-blue-500 text-xl mr-3"></i>
+                                            <span class="font-medium">支付�?/span>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 保存按钮 -->
+                            <div class="flex justify-end mt-6">
+                                <button class="px-6 py-2 bg-accent hover:bg-red-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">
+                                    保存设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 小票设置 -->
+                    <div x-show="activeTab === 'receipt'" class="space-y-6">
+                        <h2 class="text-xl font-semibold mb-4">小票设置</h2>
+                        
+                        <!-- 小票内容设置表单 -->
+                        <div class="space-y-4">
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">商家名称</label>
+                                <input type="text" value="T-Order 餐厅" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">联系电话</label>
+                                <input type="text" value="12345678901" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">地址</label>
+                                <input type="text" value="北京市朝阳区XX街XX�? class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">小票页脚信息</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent" rows="3">感谢您的光临，欢迎下次再来！</textarea>
+                            </div>
+                            
+                            <!-- 保存按钮 -->
+                            <div class="flex justify-end mt-6">
+                                <button class="px-6 py-2 bg-accent hover:bg-red-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">
+                                    保存设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 其他选项卡内容类�?.. -->
+                    <div x-show="activeTab === 'discount'" class="text-center py-10 text-gray-500">
+                        <i class="fas fa-cog fa-spin text-4xl mb-4"></i>
+                        <p>折扣管理设置正在开发中...</p>
+                    </div>
+                    
+                    <div x-show="activeTab === 'taxes'" class="text-center py-10 text-gray-500">
+                        <i class="fas fa-cog fa-spin text-4xl mb-4"></i>
+                        <p>税率设置正在开发中...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 主应用脚�?-->
+    <script src="../assets/js/main.js"></script>
+</body>
+</html> 

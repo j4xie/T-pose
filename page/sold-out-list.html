@@ -11,9 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#191919',
-                        accent: '#F7332D',
+                        primary: '#333333',       // 深灰/黑色
+                        secondary: '#FECB8B',     // 杏色/浅橙色
+                        accent: '#F7332D',        // 红色
                         background: '#F5F5F5',
+                        'accent-light': '#FF6B66',
+                        'secondary-light': '#FDD9AD',
+                        'primary-dark': '#191919'
                     }
                 }
             }
@@ -26,7 +30,7 @@
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="bg-background text-primary">
     <div id="app" class="min-h-screen flex flex-col">
@@ -35,15 +39,18 @@
             <!-- 左侧: Logo 和模块导航 -->
             <div class="flex items-center space-x-4">
                 <div class="logo">
-                    <img src="assets/img/logo.png" alt="T-Order Logo" class="h-10">
+                    <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10">
                 </div>
                 <!-- 模块标签 - 可根据当前页面动态高亮 -->
                 <nav class="flex space-x-1">
-                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
-                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
-                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
-                    <a href="sold-out-list.html" class="px-4 py-2 rounded bg-gray-100 font-medium">沽清</a>
-                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                    <a href="select-shift.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">
+                        <i class="fas fa-th-large mr-1"></i>功能
+                    </a>
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded bg-accent/10 font-medium text-accent">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-secondary/20 transition">交接班</a>
                 </nav>
             </div>
             
@@ -67,7 +74,7 @@
                 </div>
                 
                 <!-- 班次 -->
-                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                <div class="shift-info px-2 py-1 bg-secondary/30 rounded text-sm">
                     <span>早班</span>
                 </div>
                 
@@ -75,7 +82,7 @@
                 <div class="user-avatar" x-data="{ showDropdown: false }">
                     <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
                         <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
-                             class="h-8 w-8 rounded-full object-cover">
+                             class="h-8 w-8 rounded-full object-cover border-2 border-secondary">
                         
                         <!-- 下拉菜单 -->
                         <div x-show="showDropdown" 
@@ -87,7 +94,7 @@
                             </div>
                             <div class="p-2">
                                 <a href="login.html" 
-                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                   class="block px-4 py-2 text-sm hover:bg-secondary/20 rounded">
                                     退出登录
                                 </a>
                             </div>
@@ -104,6 +111,7 @@
             selectedDishes: [],
             categories: ['热菜', '凉菜', '主食', '饮料', '酒水', '甜点'],
             dishes: [],
+            showSoldOutOnly: false,
             
             init() {
                 this.generateDishes();
@@ -146,6 +154,11 @@
                         dish.name.toLowerCase().includes(query) || 
                         dish.category.toLowerCase().includes(query)
                     );
+                }
+                
+                // 沽清状态筛选
+                if (this.showSoldOutOnly) {
+                    filtered = filtered.filter(dish => dish.soldOut);
                 }
                 
                 return filtered;
@@ -204,8 +217,8 @@
                     <div class="flex space-x-2">
                         <button @click="batchSetSoldOut()" 
                                 :class="{
-                                    'px-4 py-2 rounded-lg border border-gray-200 flex items-center transition': true,
-                                    'bg-accent text-white border-accent hover:bg-red-600': selectedDishes.length > 0,
+                                    'px-4 py-2 rounded-lg border flex items-center transition': true,
+                                    'bg-accent text-white border-accent hover:bg-accent-light': selectedDishes.length > 0,
                                     'bg-gray-200 text-gray-400 cursor-not-allowed': selectedDishes.length === 0
                                 }"
                                 :disabled="selectedDishes.length === 0">
@@ -215,7 +228,7 @@
                         
                         <button @click="batchCancelSoldOut()" 
                                 :class="{
-                                    'px-4 py-2 rounded-lg border border-gray-200 flex items-center transition': true,
+                                    'px-4 py-2 rounded-lg border flex items-center transition': true,
                                     'bg-green-500 text-white border-green-500 hover:bg-green-600': selectedDishes.length > 0,
                                     'bg-gray-200 text-gray-400 cursor-not-allowed': selectedDishes.length === 0
                                 }"
@@ -244,7 +257,7 @@
                             :class="{
                                 'px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors': true,
                                 'bg-accent text-white': selectedCategory === 'all',
-                                'text-gray-600 hover:bg-gray-100': selectedCategory !== 'all'
+                                'text-gray-600 hover:bg-secondary/10': selectedCategory !== 'all'
                             }">
                         全部
                     </button>
@@ -254,37 +267,36 @@
                                 :class="{
                                     'px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors': true,
                                     'bg-accent text-white': selectedCategory === category,
-                                    'text-gray-600 hover:bg-gray-100': selectedCategory !== category
+                                    'text-gray-600 hover:bg-secondary/10': selectedCategory !== category
                                 }"
                                 x-text="category"></button>
                     </template>
                 </div>
                 
                 <!-- 筛选按钮 -->
-                <div x-data="{ showSoldOutOnly: false }">
-                    <button @click="showSoldOutOnly = !showSoldOutOnly"
-                            :class="{
-                                'px-4 py-2 rounded-lg border transition flex items-center': true,
-                                'bg-accent text-white border-accent': showSoldOutOnly,
-                                'bg-white border-gray-200 hover:bg-gray-50': !showSoldOutOnly
-                            }">
-                        <i class="fas fa-filter mr-2"></i>
-                        <span>仅显示已沽清</span>
-                    </button>
-                </div>
+                <button @click="showSoldOutOnly = !showSoldOutOnly"
+                        :class="{
+                            'px-4 py-2 rounded-lg border transition flex items-center': true,
+                            'bg-accent text-white border-accent': showSoldOutOnly,
+                            'bg-white border-gray-200 hover:bg-secondary/10': !showSoldOutOnly
+                        }">
+                    <i class="fas fa-filter mr-2"></i>
+                    <span>仅显示已沽清</span>
+                </button>
             </div>
             
             <!-- 菜品列表 -->
             <div class="bg-white rounded-xl p-6 shadow-sm">
                 <!-- 选中项提示 -->
-                <div x-show="selectedDishes.length > 0" class="mb-4 p-3 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-between">
+                <div x-show="selectedDishes.length > 0" 
+                     class="mb-4 p-3 bg-accent/10 text-accent rounded-lg flex items-center justify-between">
                     <div>
                         <i class="fas fa-info-circle mr-2"></i>
                         <span>已选择 </span>
                         <span x-text="selectedDishes.length"></span>
                         <span> 个菜品</span>
                     </div>
-                    <button @click="selectedDishes = []" class="text-blue-500 hover:text-blue-700">
+                    <button @click="selectedDishes = []" class="text-accent hover:text-accent-light">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -293,7 +305,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="bg-gray-50">
+                            <tr class="border-b border-gray-100">
                                 <th class="px-4 py-3 text-left">
                                     <input type="checkbox" 
                                            :checked="selectedDishes.length > 0 && selectedDishes.length === getFilteredDishes().length"
@@ -317,7 +329,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             <template x-for="dish in getFilteredDishes()" :key="dish.id">
-                                <tr :class="{ 'bg-red-50': dish.soldOut }" class="hover:bg-gray-50">
+                                <tr :class="{ 'bg-accent/5': dish.soldOut }" class="hover:bg-gray-50 transition-colors">
                                     <td class="px-4 py-3">
                                         <input type="checkbox" 
                                                :checked="isDishSelected(dish.id)"
@@ -325,29 +337,29 @@
                                                class="rounded text-accent focus:ring-accent">
                                     </td>
                                     <td class="px-4 py-3 flex items-center">
-                                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded overflow-hidden">
+                                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded-md overflow-hidden shadow-sm">
                                             <img :src="dish.image" :alt="dish.name" class="w-full h-full object-cover">
                                         </div>
-                                        <span x-text="dish.name"></span>
+                                        <span class="font-medium" x-text="dish.name"></span>
                                     </td>
                                     <td class="px-4 py-3" x-text="dish.category"></td>
                                     <td class="px-4 py-3 text-right" x-text="'¥' + dish.price"></td>
                                     <td class="px-4 py-3 text-right" x-text="dish.stock"></td>
                                     <td class="px-4 py-3 text-right" x-text="dish.sales"></td>
                                     <td class="px-4 py-3 text-center">
-                                        <span x-show="dish.soldOut" class="px-2 py-1 bg-red-100 text-red-600 rounded text-sm">
+                                        <span x-show="dish.soldOut" class="px-2 py-1 bg-accent/10 text-accent rounded-full text-xs font-medium">
                                             已沽清
                                         </span>
-                                        <span x-show="!dish.soldOut" class="px-2 py-1 bg-green-100 text-green-600 rounded text-sm">
+                                        <span x-show="!dish.soldOut" class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
                                             在售
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <button @click="toggleSoldOut(dish)" 
                                                 :class="{
-                                                    'px-3 py-1 rounded text-sm': true,
+                                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors': true,
                                                     'bg-green-500 text-white hover:bg-green-600': dish.soldOut,
-                                                    'bg-red-500 text-white hover:bg-red-600': !dish.soldOut
+                                                    'bg-accent text-white hover:bg-accent-light': !dish.soldOut
                                                 }">
                                             <span x-text="dish.soldOut ? '取消沽清' : '沽清'"></span>
                                         </button>
@@ -358,20 +370,31 @@
                     </table>
                 </div>
                 
+                <!-- 没有数据时显示 -->
+                <div x-show="getFilteredDishes().length === 0" class="py-16 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-cookie-bite text-gray-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-700">没有找到菜品</h3>
+                    <p class="text-gray-500 mt-1">
+                        尝试更改筛选条件或搜索其他关键词
+                    </p>
+                </div>
+                
                 <!-- 分页控件 -->
-                <div class="mt-6 flex justify-between items-center">
+                <div x-show="getFilteredDishes().length > 0" class="mt-6 flex justify-between items-center">
                     <div class="text-sm text-gray-500">
-                        显示 1-30 共 <span x-text="dishes.length"></span> 项
+                        显示 1-<span x-text="getFilteredDishes().length"></span> 个，共 <span x-text="dishes.length"></span> 个菜品
                     </div>
                     
                     <div class="flex space-x-1">
                         <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50 text-gray-400 cursor-not-allowed">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <button class="px-3 py-1 border border-gray-200 rounded bg-accent text-white">1</button>
-                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">2</button>
-                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">3</button>
-                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">
+                        <button class="px-3 py-1 border-2 border-accent bg-accent/10 text-accent rounded font-medium">1</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-secondary/10">2</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-secondary/10">3</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-secondary/10">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
