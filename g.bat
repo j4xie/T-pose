@@ -3,6 +3,7 @@
 :: 用法: g <命令> [参数]
 
 setlocal enabledelayedexpansion
+chcp 65001 > nul
 
 if "%~1"=="" (
     echo 用法: g ^<命令^> [参数]

@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+chcp 65001 > nul
 
 :: gitpush.bat - 一键执行git add/commit/push的Windows批处理脚本
 :: 用法: gitpush "提交信息"

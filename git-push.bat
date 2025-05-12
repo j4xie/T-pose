@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+chcp 65001 > nul
 
 :: git-push.bat - 另一个一键提交的批处理脚本
 :: 用法: git-push "提交信息" [分支名]
