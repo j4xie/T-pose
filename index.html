@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Order POS 系统 - 页面总览</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .page-frame {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .page-frame:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .frame-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 宽高比 */
+        }
+        
+        .frame-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-primary">
+    <div id="app" class="min-h-screen p-6" x-data="{
+        pages: [
+            { name: '登录', path: 'login.html', description: '用户登录界面' },
+            { name: '选择工作', path: 'select-shift.html', description: '选择工作班次' },
+            { name: '餐位图A', path: 'table-map-A.html', description: '网格式餐位图' },
+            { name: '餐位图B', path: 'table-map-B.html', description: '平面式餐位图' },
+            { name: '开台-未选菜', path: 'open-table-empty.html', description: '开台初始状态' },
+            { name: '开台-已选择菜', path: 'open-table-selected.html', description: '已选择菜品状态' },
+            { name: '开台-已下单菜', path: 'open-table-ordered.html', description: '已下单状态' },
+            { name: '开台-整单备注', path: 'open-table-note.html', description: '添加整单备注' },
+            { name: '结账', path: 'checkout-home.html', description: '结账首页' },
+            { name: '结账-会员结账', path: 'checkout-member.html', description: '会员结账页面' },
+            { name: '已结账单', path: 'checkout-history.html', description: '历史账单查询' }
+        ],
+        viewMode: 'grid', // 'grid' 或 'full'
+        selectedPage: null,
+        
+        toggleViewMode() {
+            this.viewMode = this.viewMode === 'grid' ? 'full' : 'grid';
+            this.selectedPage = null;
+        },
+        
+        selectPage(page) {
+            if (this.viewMode === 'full') {
+                this.selectedPage = page;
+            } else {
+                window.open(page.path, '_blank');
+            }
+        }
+    }">
+        <!-- 头部 -->
+        <header class="mb-6">
+            <div class="container mx-auto flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold flex items-center">
+                        <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10 mr-3">
+                        T-Order POS 系统
+                        <span class="ml-3 text-base font-normal text-gray-500">页面总览</span>
+                    </h1>
+                    <p class="mt-1 text-gray-500">UI 原型展示，提供所有页面的预览和导航</p>
+                </div>
+                
+                <!-- 视图切换按钮 -->
+                <div>
+                    <button @click="toggleViewMode()" class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 flex items-center">
+                        <template x-if="viewMode === 'grid'">
+                            <i class="fas fa-expand-alt mr-2"></i>
+                        </template>
+                        <template x-if="viewMode === 'full'">
+                            <i class="fas fa-th-large mr-2"></i>
+                        </template>
+                        <span x-text="viewMode === 'grid' ? '全屏视图' : '网格视图'"></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 网格视图 -->
+        <template x-if="viewMode === 'grid'">
+            <div class="container mx-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <template x-for="page in pages" :key="page.path">
+                        <div class="page-frame bg-white">
+                            <!-- 页面预览 -->
+                            <div class="frame-container">
+                                <iframe :src="page.path" loading="lazy" title="Page preview"></iframe>
+                            </div>
+                            
+                            <!-- 页面信息 -->
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg" x-text="page.name"></h3>
+                                <p class="text-sm text-gray-500 mt-1" x-text="page.description"></p>
+                                
+                                <div class="mt-4 flex justify-between items-center">
+                                    <div class="text-sm text-gray-500">
+                                        <span x-text="page.path"></span>
+                                    </div>
+                                    <button @click="selectPage(page)" class="px-3 py-1 bg-accent text-white rounded hover:bg-red-600 text-sm">
+                                        查看
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+        
+        <!-- 全屏视图 -->
+        <template x-if="viewMode === 'full'">
+            <div class="container mx-auto flex h-[calc(100vh-150px)]">
+                <!-- 左侧页面列表 -->
+                <div class="w-64 bg-white rounded-lg shadow-sm p-4 mr-4 overflow-y-auto">
+                    <h3 class="font-bold mb-3">页面列表</h3>
+                    
+                    <ul class="space-y-1">
+                        <template x-for="page in pages" :key="page.path">
+                            <li>
+                                <button @click="selectPage(page)" 
+                                        :class="{
+                                            'w-full text-left px-3 py-2 rounded transition text-sm': true,
+                                            'bg-accent text-white': selectedPage && selectedPage.path === page.path,
+                                            'hover:bg-gray-100': !selectedPage || selectedPage.path !== page.path
+                                        }">
+                                    <span x-text="page.name"></span>
+                                </button>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                
+                <!-- 右侧预览区 -->
+                <div class="flex-1 bg-white rounded-lg shadow-sm overflow-hidden">
+                    <template x-if="!selectedPage">
+                        <div class="h-full flex items-center justify-center text-gray-400">
+                            <div class="text-center">
+                                <i class="fas fa-desktop text-6xl mb-4"></i>
+                                <p>请从左侧选择一个页面进行预览</p>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template x-if="selectedPage">
+                        <iframe :src="selectedPage.path" class="w-full h-full border-0"></iframe>
+                    </template>
+                </div>
+            </div>
+        </template>
+        
+        <!-- 底部 -->
+        <footer class="mt-8 container mx-auto">
+            <div class="text-center text-gray-500 text-sm">
+                <p>© 2023 T-Order POS System. 版本 v1.0.0</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html> 

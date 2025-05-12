@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沽清管理 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded bg-gray-100 font-medium">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="{
+            searchQuery: '',
+            selectedCategory: 'all',
+            selectedDishes: [],
+            categories: ['热菜', '凉菜', '主食', '饮料', '酒水', '甜点'],
+            dishes: [],
+            
+            init() {
+                this.generateDishes();
+            },
+            
+            generateDishes() {
+                const dishNames = [
+                    '宫保鸡丁', '水煮鱼', '麻婆豆腐', '鱼香肉丝', '糖醋排骨',
+                    '拍黄瓜', '皮蛋豆腐', '凉拌木耳', '龙井虾仁', '手撕包菜',
+                    '米饭', '蒸饺', '馒头', '炒饭', '炒面',
+                    '可乐', '雪碧', '果汁', '柠檬水', '矿泉水',
+                    '啤酒', '红酒', '白酒', '鸡尾酒', '威士忌',
+                    '提拉米苏', '芝士蛋糕', '冰淇淋', '水果拼盘', '布丁'
+                ];
+                
+                this.dishes = dishNames.map((name, index) => ({
+                    id: index + 1,
+                    name,
+                    price: Math.floor(Math.random() * 80) + 20,
+                    category: this.categories[Math.floor(index / 5)],
+                    image: `https://source.unsplash.com/featured/?food,${name.replace(/\s/g, '')}`,
+                    soldOut: Math.random() > 0.7,
+                    stock: Math.floor(Math.random() * 30),
+                    sales: Math.floor(Math.random() * 50)
+                }));
+            },
+            
+            getFilteredDishes() {
+                let filtered = [...this.dishes];
+                
+                // 分类筛选
+                if (this.selectedCategory !== 'all') {
+                    filtered = filtered.filter(dish => dish.category === this.selectedCategory);
+                }
+                
+                // 搜索筛选
+                if (this.searchQuery) {
+                    const query = this.searchQuery.toLowerCase();
+                    filtered = filtered.filter(dish => 
+                        dish.name.toLowerCase().includes(query) || 
+                        dish.category.toLowerCase().includes(query)
+                    );
+                }
+                
+                return filtered;
+            },
+            
+            toggleDishSelection(dish) {
+                const index = this.selectedDishes.findIndex(d => d.id === dish.id);
+                
+                if (index === -1) {
+                    this.selectedDishes.push(dish);
+                } else {
+                    this.selectedDishes.splice(index, 1);
+                }
+            },
+            
+            isDishSelected(dishId) {
+                return this.selectedDishes.some(dish => dish.id === dishId);
+            },
+            
+            toggleSoldOut(dish) {
+                dish.soldOut = !dish.soldOut;
+                
+                // 如果设为沽清，从已选列表中移除
+                if (dish.soldOut) {
+                    const index = this.selectedDishes.findIndex(d => d.id === dish.id);
+                    if (index !== -1) {
+                        this.selectedDishes.splice(index, 1);
+                    }
+                }
+            },
+            
+            batchSetSoldOut() {
+                this.selectedDishes.forEach(dish => {
+                    dish.soldOut = true;
+                });
+                
+                // 清空选择
+                this.selectedDishes = [];
+            },
+            
+            batchCancelSoldOut() {
+                this.selectedDishes.forEach(dish => {
+                    dish.soldOut = false;
+                });
+                
+                // 清空选择
+                this.selectedDishes = [];
+            }
+        }">
+            <!-- 页面标题和工具栏 -->
+            <div class="flex justify-between mb-6">
+                <h1 class="text-2xl font-bold">菜品沽清管理</h1>
+                
+                <div class="flex space-x-3">
+                    <!-- 批量操作按钮 -->
+                    <div class="flex space-x-2">
+                        <button @click="batchSetSoldOut()" 
+                                :class="{
+                                    'px-4 py-2 rounded-lg border border-gray-200 flex items-center transition': true,
+                                    'bg-accent text-white border-accent hover:bg-red-600': selectedDishes.length > 0,
+                                    'bg-gray-200 text-gray-400 cursor-not-allowed': selectedDishes.length === 0
+                                }"
+                                :disabled="selectedDishes.length === 0">
+                            <i class="fas fa-ban mr-2"></i>
+                            <span>批量沽清</span>
+                        </button>
+                        
+                        <button @click="batchCancelSoldOut()" 
+                                :class="{
+                                    'px-4 py-2 rounded-lg border border-gray-200 flex items-center transition': true,
+                                    'bg-green-500 text-white border-green-500 hover:bg-green-600': selectedDishes.length > 0,
+                                    'bg-gray-200 text-gray-400 cursor-not-allowed': selectedDishes.length === 0
+                                }"
+                                :disabled="selectedDishes.length === 0">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span>批量取消</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 筛选工具栏 -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <!-- 搜索框 -->
+                <div class="relative flex-grow max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" placeholder="搜索菜品" x-model="searchQuery"
+                           class="w-full pl-10 pr-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                </div>
+                
+                <!-- 分类筛选 -->
+                <div class="category-tabs inline-flex bg-white rounded-lg p-1 shadow-sm">
+                    <button @click="selectedCategory = 'all'"
+                            :class="{
+                                'px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors': true,
+                                'bg-accent text-white': selectedCategory === 'all',
+                                'text-gray-600 hover:bg-gray-100': selectedCategory !== 'all'
+                            }">
+                        全部
+                    </button>
+                    
+                    <template x-for="category in categories" :key="category">
+                        <button @click="selectedCategory = category"
+                                :class="{
+                                    'px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors': true,
+                                    'bg-accent text-white': selectedCategory === category,
+                                    'text-gray-600 hover:bg-gray-100': selectedCategory !== category
+                                }"
+                                x-text="category"></button>
+                    </template>
+                </div>
+                
+                <!-- 筛选按钮 -->
+                <div x-data="{ showSoldOutOnly: false }">
+                    <button @click="showSoldOutOnly = !showSoldOutOnly"
+                            :class="{
+                                'px-4 py-2 rounded-lg border transition flex items-center': true,
+                                'bg-accent text-white border-accent': showSoldOutOnly,
+                                'bg-white border-gray-200 hover:bg-gray-50': !showSoldOutOnly
+                            }">
+                        <i class="fas fa-filter mr-2"></i>
+                        <span>仅显示已沽清</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 菜品列表 -->
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+                <!-- 选中项提示 -->
+                <div x-show="selectedDishes.length > 0" class="mb-4 p-3 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-between">
+                    <div>
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>已选择 </span>
+                        <span x-text="selectedDishes.length"></span>
+                        <span> 个菜品</span>
+                    </div>
+                    <button @click="selectedDishes = []" class="text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- 菜品表格 -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-3 text-left">
+                                    <input type="checkbox" 
+                                           :checked="selectedDishes.length > 0 && selectedDishes.length === getFilteredDishes().length"
+                                           @click="
+                                               if (selectedDishes.length === getFilteredDishes().length) {
+                                                   selectedDishes = [];
+                                               } else {
+                                                   selectedDishes = [...getFilteredDishes()];
+                                               }
+                                           "
+                                           class="rounded text-accent focus:ring-accent">
+                                </th>
+                                <th class="px-4 py-3 text-left">菜品名称</th>
+                                <th class="px-4 py-3 text-left">分类</th>
+                                <th class="px-4 py-3 text-right">价格</th>
+                                <th class="px-4 py-3 text-right">库存</th>
+                                <th class="px-4 py-3 text-right">销量</th>
+                                <th class="px-4 py-3 text-center">状态</th>
+                                <th class="px-4 py-3 text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <template x-for="dish in getFilteredDishes()" :key="dish.id">
+                                <tr :class="{ 'bg-red-50': dish.soldOut }" class="hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <input type="checkbox" 
+                                               :checked="isDishSelected(dish.id)"
+                                               @click="toggleDishSelection(dish)"
+                                               class="rounded text-accent focus:ring-accent">
+                                    </td>
+                                    <td class="px-4 py-3 flex items-center">
+                                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded overflow-hidden">
+                                            <img :src="dish.image" :alt="dish.name" class="w-full h-full object-cover">
+                                        </div>
+                                        <span x-text="dish.name"></span>
+                                    </td>
+                                    <td class="px-4 py-3" x-text="dish.category"></td>
+                                    <td class="px-4 py-3 text-right" x-text="'¥' + dish.price"></td>
+                                    <td class="px-4 py-3 text-right" x-text="dish.stock"></td>
+                                    <td class="px-4 py-3 text-right" x-text="dish.sales"></td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span x-show="dish.soldOut" class="px-2 py-1 bg-red-100 text-red-600 rounded text-sm">
+                                            已沽清
+                                        </span>
+                                        <span x-show="!dish.soldOut" class="px-2 py-1 bg-green-100 text-green-600 rounded text-sm">
+                                            在售
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button @click="toggleSoldOut(dish)" 
+                                                :class="{
+                                                    'px-3 py-1 rounded text-sm': true,
+                                                    'bg-green-500 text-white hover:bg-green-600': dish.soldOut,
+                                                    'bg-red-500 text-white hover:bg-red-600': !dish.soldOut
+                                                }">
+                                            <span x-text="dish.soldOut ? '取消沽清' : '沽清'"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 分页控件 -->
+                <div class="mt-6 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        显示 1-30 共 <span x-text="dishes.length"></span> 项
+                    </div>
+                    
+                    <div class="flex space-x-1">
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50 text-gray-400 cursor-not-allowed">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-3 py-1 border border-gray-200 rounded bg-accent text-white">1</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">3</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

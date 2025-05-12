@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结账 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded bg-gray-100 font-medium">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="{
+            searchQuery: '',
+            selectedTable: null,
+            tables: [
+                { id: 1, name: '1号桌', area: '大厅', people: 3, openTime: '12:30', orderTotal: 245.00, status: 'dining' },
+                { id: 2, name: '2号桌', area: '大厅', people: 2, openTime: '12:45', orderTotal: 168.00, status: 'dining' },
+                { id: 5, name: '5号桌', area: '包间', people: 5, openTime: '13:15', orderTotal: 560.00, status: 'dining' },
+                { id: 8, name: '8号桌', area: '包间', people: 8, openTime: '11:30', orderTotal: 1260.00, status: 'dining' },
+                { id: 10, name: '10号桌', area: '露台', people: 4, openTime: '13:00', orderTotal: 320.00, status: 'dining' }
+            ],
+            
+            getFilteredTables() {
+                if (!this.searchQuery) return this.tables;
+                
+                const query = this.searchQuery.toLowerCase();
+                return this.tables.filter(table => 
+                    table.name.toLowerCase().includes(query) || 
+                    table.area.toLowerCase().includes(query)
+                );
+            },
+            
+            selectTable(table) {
+                this.selectedTable = table;
+            },
+            
+            proceedToCheckout() {
+                if (!this.selectedTable) return;
+                
+                // 跳转到结账页面
+                window.location.href = 'checkout-member.html';
+            },
+            
+            viewCheckoutHistory() {
+                window.location.href = 'checkout-history.html';
+            }
+        }">
+            <!-- 页面标题与搜索框 -->
+            <div class="flex justify-between mb-6">
+                <h1 class="text-2xl font-bold">结账</h1>
+                
+                <div class="flex space-x-3">
+                    <!-- 搜索框 -->
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" placeholder="搜索餐桌" x-model="searchQuery"
+                               class="w-64 pl-10 pr-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                    </div>
+                    
+                    <!-- 历史订单按钮 -->
+                    <button @click="viewCheckoutHistory()" 
+                            class="px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fas fa-history mr-2"></i>
+                        <span>已结账单</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 主内容区：餐桌列表与结账面板 -->
+            <div class="flex gap-4">
+                <!-- 左侧：餐桌列表 -->
+                <div class="w-2/3 bg-white rounded-xl p-4 shadow-sm overflow-hidden">
+                    <div class="mb-4 pb-2 border-b border-gray-100">
+                        <h2 class="font-bold text-lg">在用餐桌</h2>
+                    </div>
+                    
+                    <!-- 餐桌列表 -->
+                    <div class="overflow-y-auto h-[calc(100vh-220px)]">
+                        <template x-if="getFilteredTables().length === 0">
+                            <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+                                <i class="fas fa-search text-5xl mb-4"></i>
+                                <p>没有找到符合条件的餐桌</p>
+                            </div>
+                        </template>
+                        
+                        <div class="grid grid-cols-3 gap-4">
+                            <template x-for="table in getFilteredTables()" :key="table.id">
+                                <div @click="selectTable(table)"
+                                     :class="{
+                                         'table-item bg-white border-2 rounded-xl p-5 cursor-pointer transition': true,
+                                         'border-accent shadow-md': selectedTable && selectedTable.id === table.id,
+                                         'border-gray-200 hover:border-gray-300': !selectedTable || selectedTable.id !== table.id
+                                     }">
+                                    <div class="flex justify-between">
+                                        <h3 class="text-lg font-bold" x-text="table.name"></h3>
+                                        <div class="px-2 py-1 bg-accent text-white text-xs rounded-full">
+                                            用餐中
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3 space-y-2 text-sm text-gray-600">
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                                <span x-text="table.area"></span>
+                                            </div>
+                                            <div>
+                                                <i class="fas fa-users mr-1"></i>
+                                                <span x-text="table.people + ' 人'"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <i class="far fa-clock mr-1"></i>
+                                                <span x-text="table.openTime"></span>
+                                            </div>
+                                            <div>
+                                                <i class="fas fa-receipt mr-1"></i>
+                                                <span x-text="'¥' + table.orderTotal.toFixed(2)"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 flex justify-end">
+                                        <button class="px-3 py-1.5 bg-accent hover:bg-red-600 text-white text-sm rounded-lg flex items-center">
+                                            <i class="fas fa-cash-register mr-1"></i>
+                                            结账
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：结账面板 -->
+                <div class="w-1/3 bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <!-- 面板标题 -->
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="font-bold">结账详情</h2>
+                    </div>
+                    
+                    <template x-if="!selectedTable">
+                        <div class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400">
+                            <i class="fas fa-receipt text-6xl mb-4"></i>
+                            <p class="text-center">请选择一个餐桌进行结账</p>
+                        </div>
+                    </template>
+                    
+                    <template x-if="selectedTable">
+                        <div class="flex-1 flex flex-col">
+                            <!-- 桌台信息 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-bold" x-text="selectedTable.name"></h3>
+                                        <div class="text-sm text-gray-500 mt-1">
+                                            <span x-text="selectedTable.area"></span>
+                                            <span class="mx-1">•</span>
+                                            <span x-text="selectedTable.people + ' 人'"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="px-2 py-1 bg-accent text-white text-xs rounded-full">
+                                            用餐中
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 flex justify-between text-sm text-gray-500">
+                                    <div>
+                                        <i class="far fa-clock mr-1"></i>
+                                        <span>开台时间: </span>
+                                        <span x-text="selectedTable.openTime"></span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-hourglass-half mr-1"></i>
+                                        <span>用餐时长: 1小时20分</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 订单信息 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <h4 class="font-medium mb-3">订单信息</h4>
+                                
+                                <div class="divide-y divide-gray-100">
+                                    <!-- 订单项 -->
+                                    <div class="py-2 flex justify-between">
+                                        <div class="flex items-start">
+                                            <span class="text-gray-500 w-6">1x</span>
+                                            <span>宫保鸡丁</span>
+                                        </div>
+                                        <span>¥68.00</span>
+                                    </div>
+                                    <div class="py-2 flex justify-between">
+                                        <div class="flex items-start">
+                                            <span class="text-gray-500 w-6">2x</span>
+                                            <span>米饭</span>
+                                        </div>
+                                        <span>¥10.00</span>
+                                    </div>
+                                    <div class="py-2 flex justify-between">
+                                        <div class="flex items-start">
+                                            <span class="text-gray-500 w-6">1x</span>
+                                            <span>可乐</span>
+                                        </div>
+                                        <span>¥12.00</span>
+                                    </div>
+                                    <div class="py-2 flex justify-between">
+                                        <div class="flex items-start">
+                                            <span class="text-gray-500 w-6">1x</span>
+                                            <span>糖醋排骨</span>
+                                        </div>
+                                        <span>¥76.00</span>
+                                    </div>
+                                    <div class="py-2 flex justify-between">
+                                        <div class="flex items-start">
+                                            <span class="text-gray-500 w-6">1x</span>
+                                            <span>拍黄瓜</span>
+                                        </div>
+                                        <span>¥28.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 订单计算 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>小计</span>
+                                        <span x-text="'¥' + selectedTable.orderTotal.toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>服务费 (10%)</span>
+                                        <span x-text="'¥' + (selectedTable.orderTotal * 0.1).toFixed(2)"></span>
+                                    </div>
+                                    <div class="flex justify-between font-bold">
+                                        <span>应付金额</span>
+                                        <span class="text-accent" x-text="'¥' + (selectedTable.orderTotal * 1.1).toFixed(2)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 支付方式 -->
+                            <div class="p-4">
+                                <h4 class="font-medium mb-3">选择支付方式</h4>
+                                
+                                <div class="grid grid-cols-3 gap-2 mb-6">
+                                    <button class="payment-method p-3 border-2 border-accent bg-red-50 rounded-lg flex flex-col items-center">
+                                        <i class="fab fa-weixin text-xl text-green-600"></i>
+                                        <span class="text-sm mt-1">微信支付</span>
+                                    </button>
+                                    <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
+                                        <i class="fab fa-alipay text-xl text-blue-500"></i>
+                                        <span class="text-sm mt-1">支付宝</span>
+                                    </button>
+                                    <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
+                                        <i class="fas fa-credit-card text-xl text-gray-600"></i>
+                                        <span class="text-sm mt-1">刷卡</span>
+                                    </button>
+                                    <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
+                                        <i class="fas fa-money-bill-wave text-xl text-gray-600"></i>
+                                        <span class="text-sm mt-1">现金</span>
+                                    </button>
+                                    <a href="checkout-member.html" class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
+                                        <i class="fas fa-user-circle text-xl text-purple-600"></i>
+                                        <span class="text-sm mt-1">会员</span>
+                                    </a>
+                                    <button class="payment-method p-3 border-2 border-gray-200 rounded-lg flex flex-col items-center hover:border-gray-300">
+                                        <i class="fas fa-ellipsis-h text-xl text-gray-600"></i>
+                                        <span class="text-sm mt-1">其他</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- 底部按钮 -->
+                    <div class="p-4 bg-gray-50 border-t border-gray-200">
+                        <button @click="proceedToCheckout()"
+                                :class="{
+                                    'w-full py-3 rounded-lg flex items-center justify-center font-medium transition-colors': true,
+                                    'bg-accent hover:bg-red-600 active:bg-red-700 text-white': selectedTable,
+                                    'bg-gray-200 text-gray-400 cursor-not-allowed': !selectedTable
+                                }"
+                                :disabled="!selectedTable">
+                            <i class="fas fa-cash-register mr-2"></i>
+                            确认结账
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

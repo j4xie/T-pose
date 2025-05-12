@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Order POS 系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 - 根据需要条件显示 -->
+        <header x-data="{ showHeader: true }" x-show="showHeader" class="header-toolbar flex justify-between items-center px-4 py-2 h-16">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div x-data="{ isConnected: true }" class="status-icon">
+                    <i x-show="isConnected" class="fas fa-wifi text-green-500"></i>
+                    <i x-show="!isConnected" class="fas fa-wifi-slash text-red-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div x-data="{ isConnected: true }" class="status-icon">
+                    <i x-show="isConnected" class="fas fa-print text-green-500"></i>
+                    <i x-show="!isConnected" class="fas fa-print text-red-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span x-text="$store.app.currentShift || '未选班'"></span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div x-text="$store.app.currentUser?.name || '未登录'" class="font-medium"></div>
+                                <div x-text="$store.app.currentUser?.role || ''" class="text-sm text-gray-600"></div>
+                            </div>
+                            <div class="p-2">
+                                <a href="#" @click="$store.app.logout()" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="content-area flex-1">
+            <!-- 页面内容将在这里插入 -->
+            <div id="page-content">
+                <!-- 页面特定内容 -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- 主应用脚本 -->
+    <script src="../assets/js/main.js"></script>
+</body>
+</html> 

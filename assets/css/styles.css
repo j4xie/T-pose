@@ -1,0 +1,147 @@
+/* T-Order POS 自定义样式 */
+:root {
+  --color-primary-black: #191919;
+  --color-accent-red: #F7332D;
+  --background-gray: #F5F5F5;
+  --table-idle: #FFFFFF;
+  --table-dining: #F7332D;
+  --table-reserved: #6495FF;
+  --table-locked: #9E9E9E;
+}
+
+body {
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  color: var(--color-primary-black);
+}
+
+.btn-primary {
+  background-color: var(--color-primary-black);
+  color: white;
+}
+
+.btn-accent {
+  background-color: var(--color-accent-red);
+  color: white;
+}
+
+.brand-bg {
+  background-color: var(--color-primary-black);
+}
+
+.accent-bg {
+  background-color: var(--color-accent-red);
+}
+
+.brand-text {
+  color: var(--color-primary-black);
+}
+
+.accent-text {
+  color: var(--color-accent-red);
+}
+
+.btn-primary:hover {
+  background-color: #e12d27;
+}
+
+.btn-primary:active, 
+.btn-primary:focus-visible {
+  background-color: #d12922;
+  outline: 2px solid rgba(247, 51, 45, 0.5);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  color: var(--color-primary-black);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #f8f8f8;
+}
+
+.btn-secondary:active,
+.btn-secondary:focus-visible {
+  background-color: #f0f0f0;
+  outline: 2px solid rgba(25, 25, 25, 0.2);
+  outline-offset: 2px;
+}
+
+/* 桌台状态样式 */
+.table-idle {
+  background-color: var(--table-idle);
+  border: 1px solid #e0e0e0;
+}
+
+.table-dining {
+  background-color: var(--table-dining);
+  color: white;
+}
+
+.table-reserved {
+  background-color: var(--table-reserved);
+  color: white;
+}
+
+.table-locked {
+  background-color: var(--table-locked);
+  color: white;
+}
+
+/* 顶部工具栏样式 */
+.header-toolbar {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片样式 */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 布局辅助类 */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-area {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* 动画和过渡效果 */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.fade-leave-active {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* 响应式设计调整 */
+@media (max-width: 1366px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+@media (min-width: 1367px) and (max-width: 1920px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+} 

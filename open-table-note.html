@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>整单备注 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col bg-gray-100">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded bg-gray-100 font-medium">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4 flex items-center justify-center" x-data="{
+            orderNote: '窗边的座位，客人有小孩',
+            commonNotes: [
+                '不要辣', '少放盐', '不要葱姜蒜', '不要香菜', 
+                '打包', '准备儿童餐具', '准备婴儿椅',
+                '过敏请注意', '窗边座位', '禁忌猪肉', '禁忌海鲜'
+            ],
+            saveNote() {
+                // 跳转回点菜页面
+                window.location.href = 'open-table-selected.html';
+            }
+        }">
+            <div class="w-[800px] bg-white rounded-xl shadow-xl overflow-hidden">
+                <!-- 头部 -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-xl font-bold">整单备注</h1>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span>1号桌</span>
+                            <span class="mx-2">|</span>
+                            <span>4个座位</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 备注输入区 -->
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label for="note" class="block text-sm font-medium mb-2">整单备注</label>
+                        <textarea id="note" x-model="orderNote"
+                                  class="w-full h-40 p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+                                  placeholder="请输入整单备注信息..."></textarea>
+                    </div>
+                    
+                    <!-- 常用备注快捷选择 -->
+                    <div>
+                        <h3 class="text-sm font-medium mb-3">常用备注</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="note in commonNotes" :key="note">
+                                <button @click="orderNote = orderNote ? orderNote + '，' + note : note"
+                                        class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition">
+                                    <span x-text="note"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部按钮 -->
+                <div class="p-6 bg-gray-50 flex justify-end space-x-4">
+                    <a href="open-table-selected.html" 
+                       class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        取消
+                    </a>
+                    <button @click="saveNote()"
+                            class="px-8 py-3 bg-accent hover:bg-red-600 active:bg-red-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">
+                        保存备注
+                    </button>
+                </div>
+                
+                <!-- 底部提示 -->
+                <div class="p-4 bg-gray-100 border-t border-gray-200 text-center text-sm text-gray-500">
+                    <p>备注内容将打印在厨房小票上，请确保备注清晰明了</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已结账单 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded bg-gray-100 font-medium">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="{
+            searchQuery: '',
+            dateRange: 'today',
+            paymentType: 'all',
+            selectedOrder: null,
+            orders: [
+                { 
+                    id: 'A20230512001', 
+                    table: '1号桌', 
+                    cashier: '张三',
+                    area: '大厅', 
+                    checkoutTime: '2023-05-12 14:20', 
+                    amount: 295.90,
+                    paymentMethod: '微信支付',
+                    customer: { name: '李小明', type: '会员', level: '黄金会员' },
+                    items: [
+                        { name: '宫保鸡丁', quantity: 1, price: 68.00 },
+                        { name: '米饭', quantity: 2, price: 5.00 },
+                        { name: '可乐', quantity: 1, price: 12.00 },
+                        { name: '糖醋排骨', quantity: 1, price: 76.00 },
+                        { name: '拍黄瓜', quantity: 1, price: 28.00 },
+                        { name: '水果拼盘', quantity: 1, price: 45.00 },
+                        { name: '芝士蛋糕', quantity: 1, price: 30.00 }
+                    ],
+                    note: '窗边的座位，客人有小孩'
+                },
+                { 
+                    id: 'A20230512002', 
+                    table: '5号桌', 
+                    cashier: '李四',
+                    area: '包间', 
+                    checkoutTime: '2023-05-12 13:45', 
+                    amount: 560.00,
+                    paymentMethod: '支付宝',
+                    customer: { name: '普通客户', type: '散客' },
+                    items: []
+                },
+                { 
+                    id: 'A20230512003', 
+                    table: '8号桌', 
+                    cashier: '张三',
+                    area: '包间', 
+                    checkoutTime: '2023-05-12 13:30', 
+                    amount: 1260.00,
+                    paymentMethod: '会员余额',
+                    customer: { name: '王小红', type: '会员', level: '白金会员' },
+                    items: []
+                },
+                { 
+                    id: 'A20230511001', 
+                    table: '2号桌', 
+                    cashier: '王五',
+                    area: '大厅', 
+                    checkoutTime: '2023-05-11 20:15', 
+                    amount: 168.00,
+                    paymentMethod: '现金',
+                    customer: { name: '普通客户', type: '散客' },
+                    items: []
+                },
+                { 
+                    id: 'A20230511002', 
+                    table: '10号桌', 
+                    cashier: '李四',
+                    area: '露台', 
+                    checkoutTime: '2023-05-11 21:30', 
+                    amount: 320.00,
+                    paymentMethod: '刷卡',
+                    customer: { name: '普通客户', type: '散客' },
+                    items: []
+                }
+            ],
+            
+            getFilteredOrders() {
+                let filtered = [...this.orders];
+                
+                // 日期筛选
+                if (this.dateRange === 'today') {
+                    const today = new Date().toISOString().split('T')[0];
+                    filtered = filtered.filter(order => order.checkoutTime.includes(today));
+                } else if (this.dateRange === 'yesterday') {
+                    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                    filtered = filtered.filter(order => order.checkoutTime.includes(yesterday));
+                }
+                
+                // 支付方式筛选
+                if (this.paymentType !== 'all') {
+                    filtered = filtered.filter(order => order.paymentMethod.includes(this.paymentType));
+                }
+                
+                // 搜索筛选
+                if (this.searchQuery) {
+                    const query = this.searchQuery.toLowerCase();
+                    filtered = filtered.filter(order => 
+                        order.id.toLowerCase().includes(query) || 
+                        order.table.toLowerCase().includes(query) ||
+                        order.area.toLowerCase().includes(query) ||
+                        order.customer.name.toLowerCase().includes(query)
+                    );
+                }
+                
+                return filtered;
+            },
+            
+            viewOrderDetails(order) {
+                this.selectedOrder = order;
+            },
+            
+            printReceipt() {
+                if (!this.selectedOrder) return;
+                
+                alert('正在打印小票...');
+            },
+            
+            returnToCheckout() {
+                window.location.href = 'checkout-home.html';
+            }
+        }">
+            <!-- 页面标题与返回按钮 -->
+            <div class="flex justify-between mb-6">
+                <div class="flex items-center">
+                    <a href="checkout-home.html" class="mr-3 p-2 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold">已结账单</h1>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <!-- 导出按钮 -->
+                    <button class="px-4 py-2 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fas fa-file-export mr-2"></i>
+                        <span>导出</span>
+                    </button>
+                    
+                    <!-- 打印按钮 -->
+                    <button class="px-4 py-2 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fas fa-print mr-2"></i>
+                        <span>打印</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 主内容区 -->
+            <div class="flex gap-4">
+                <!-- 左侧：订单列表 -->
+                <div class="w-3/5 bg-white rounded-xl p-6 shadow-sm overflow-hidden flex flex-col">
+                    <!-- 筛选工具栏 -->
+                    <div class="mb-6 flex flex-wrap gap-4">
+                        <!-- 搜索框 -->
+                        <div class="relative flex-grow">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" placeholder="搜索订单号/桌号/客户" x-model="searchQuery"
+                                   class="w-full pl-10 pr-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                        </div>
+                        
+                        <!-- 日期筛选 -->
+                        <div class="relative">
+                            <select x-model="dateRange"
+                                    class="appearance-none pl-3 pr-8 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                                <option value="today">今天</option>
+                                <option value="yesterday">昨天</option>
+                                <option value="week">本周</option>
+                                <option value="month">本月</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-gray-400">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- 支付方式筛选 -->
+                        <div class="relative">
+                            <select x-model="paymentType"
+                                    class="appearance-none pl-3 pr-8 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                                <option value="all">全部支付方式</option>
+                                <option value="微信">微信支付</option>
+                                <option value="支付宝">支付宝</option>
+                                <option value="会员">会员支付</option>
+                                <option value="现金">现金</option>
+                                <option value="刷卡">刷卡</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-gray-400">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 订单列表 -->
+                    <div class="flex-1 overflow-y-auto">
+                        <template x-if="getFilteredOrders().length === 0">
+                            <div class="flex flex-col items-center justify-center h-64 text-gray-400">
+                                <i class="fas fa-receipt text-5xl mb-4"></i>
+                                <p>没有找到符合条件的订单</p>
+                            </div>
+                        </template>
+                        
+                        <template x-if="getFilteredOrders().length > 0">
+                            <div class="space-y-4">
+                                <template x-for="order in getFilteredOrders()" :key="order.id">
+                                    <div @click="viewOrderDetails(order)" 
+                                         :class="{
+                                             'order-item p-4 border border-gray-200 rounded-lg cursor-pointer transition hover:border-gray-300 hover:bg-gray-50': true,
+                                             'border-accent bg-red-50': selectedOrder && selectedOrder.id === order.id
+                                         }">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <div class="flex items-center">
+                                                    <h3 class="font-bold" x-text="order.id"></h3>
+                                                    <template x-if="order.customer.type === '会员'">
+                                                        <span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                                                            <i class="fas fa-user-circle mr-1"></i>
+                                                            <span x-text="order.customer.level"></span>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                                <div class="text-sm text-gray-500 mt-1">
+                                                    <span x-text="order.table"></span>
+                                                    <span class="mx-1">•</span>
+                                                    <span x-text="order.area"></span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="font-bold text-accent" x-text="'¥' + order.amount.toFixed(2)"></div>
+                                                <div class="text-sm text-gray-500 mt-1" x-text="order.paymentMethod"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 flex justify-between text-sm">
+                                            <div class="text-gray-500">
+                                                <span>收银员: </span>
+                                                <span x-text="order.cashier"></span>
+                                            </div>
+                                            <div class="text-gray-500" x-text="order.checkoutTime"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                
+                <!-- 右侧：订单详情 -->
+                <div class="w-2/5 bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <!-- 详情标题 -->
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="font-bold">订单详情</h2>
+                    </div>
+                    
+                    <template x-if="!selectedOrder">
+                        <div class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400">
+                            <i class="fas fa-info-circle text-6xl mb-4"></i>
+                            <p class="text-center">请选择一个订单查看详情</p>
+                        </div>
+                    </template>
+                    
+                    <template x-if="selectedOrder">
+                        <div class="flex-1 flex flex-col overflow-y-auto">
+                            <!-- 订单基本信息 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-bold" x-text="selectedOrder.id"></h3>
+                                        <div class="text-sm text-gray-500 mt-1">
+                                            <span x-text="selectedOrder.table"></span>
+                                            <span class="mx-1">•</span>
+                                            <span x-text="selectedOrder.area"></span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-accent" x-text="'¥' + selectedOrder.amount.toFixed(2)"></div>
+                                        <div class="text-sm text-gray-500 mt-1" x-text="selectedOrder.paymentMethod"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 客户信息 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <h4 class="font-medium mb-2">客户信息</h4>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="font-medium" x-text="selectedOrder.customer.name"></div>
+                                        <div class="text-sm text-gray-500" x-text="selectedOrder.customer.type"></div>
+                                    </div>
+                                    <template x-if="selectedOrder.customer.type === '会员'">
+                                        <div class="ml-auto">
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">
+                                                <span x-text="selectedOrder.customer.level"></span>
+                                            </span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            
+                            <!-- 订单明细 -->
+                            <div class="p-4 border-b border-gray-100">
+                                <h4 class="font-medium mb-3">订单明细</h4>
+                                
+                                <div class="space-y-3">
+                                    <template x-if="selectedOrder.items.length > 0">
+                                        <template x-for="(item, index) in selectedOrder.items" :key="index">
+                                            <div class="flex justify-between">
+                                                <div class="flex">
+                                                    <span class="text-gray-500 w-6" x-text="item.quantity + 'x'"></span>
+                                                    <span x-text="item.name"></span>
+                                                </div>
+                                                <span x-text="'¥' + (item.quantity * item.price).toFixed(2)"></span>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    
+                                    <template x-if="selectedOrder.items.length === 0">
+                                        <div class="text-center text-gray-400 py-4">
+                                            <p>没有可用的订单明细</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            
+                            <!-- 备注信息 -->
+                            <template x-if="selectedOrder.note">
+                                <div class="p-4 border-b border-gray-100">
+                                    <h4 class="font-medium mb-2">备注</h4>
+                                    <div class="p-3 bg-gray-50 rounded-lg text-sm" x-text="selectedOrder.note"></div>
+                                </div>
+                            </template>
+                            
+                            <!-- 交易信息 -->
+                            <div class="p-4">
+                                <h4 class="font-medium mb-3">交易信息</h4>
+                                
+                                <div class="text-sm space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">结账时间</span>
+                                        <span x-text="selectedOrder.checkoutTime"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">收银员</span>
+                                        <span x-text="selectedOrder.cashier"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">支付方式</span>
+                                        <span x-text="selectedOrder.paymentMethod"></span>
+                                    </div>
+                                    <div class="flex justify-between font-bold mt-4">
+                                        <span>实收金额</span>
+                                        <span class="text-accent" x-text="'¥' + selectedOrder.amount.toFixed(2)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- 底部按钮 -->
+                    <div class="p-4 bg-gray-50 border-t border-gray-200">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button @click="returnToCheckout()"
+                                    class="py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300">
+                                返回
+                            </button>
+                            <button @click="printReceipt()"
+                                    :class="{
+                                        'py-3 rounded-lg transition-colors focus:outline-none': true,
+                                        'bg-accent hover:bg-red-600 active:bg-red-700 text-white': selectedOrder,
+                                        'bg-gray-200 text-gray-400 cursor-not-allowed': !selectedOrder
+                                    }"
+                                    :disabled="!selectedOrder">
+                                <i class="fas fa-print mr-2"></i>
+                                重打小票
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

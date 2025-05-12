@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开台 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded bg-gray-100 font-medium">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="orderSystem">
+            <!-- 顶部桌台信息 -->
+            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">1号桌</h2>
+                        <div class="text-sm text-gray-500 flex items-center">
+                            <i class="fas fa-chair mr-1"></i> 4个座位
+                            <span class="mx-2">|</span>
+                            <i class="far fa-clock mr-1"></i> 开台时间: 12:30
+                            <span class="mx-2">|</span>
+                            <span class="text-accent font-medium">已下单</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <div class="flex items-center space-x-2 border border-gray-200 rounded-lg px-3 py-2">
+                        <span class="text-sm text-gray-600">就餐人数: 3人</span>
+                    </div>
+                    <a href="table-map-A.html" class="btn-secondary px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-left mr-1"></i> 返回
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 主体内容区 -->
+            <div class="flex gap-4 h-[calc(100vh-200px)]">
+                <!-- 左侧菜单选择区 -->
+                <div class="w-3/5 bg-white rounded-xl p-4 shadow-sm overflow-hidden flex flex-col">
+                    <!-- 订单状态指示器 -->
+                    <div class="bg-green-50 text-green-700 rounded-lg p-3 mb-4 flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>订单已成功下单，厨房正在准备中</span>
+                    </div>
+                
+                    <!-- 菜品分类标签 -->
+                    <div class="category-tabs flex space-x-1 overflow-x-auto pb-2 mb-4">
+                        <template x-for="category in categories" :key="category">
+                            <button @click="selectedCategory = category"
+                                    :class="{
+                                        'px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors': true,
+                                        'bg-accent text-white': selectedCategory === category,
+                                        'bg-gray-100 text-gray-700 hover:bg-gray-200': selectedCategory !== category
+                                    }"
+                                    x-text="category"></button>
+                        </template>
+                    </div>
+                    
+                    <!-- 搜索框 -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" placeholder="搜索菜品" 
+                                   class="w-full pl-10 pr-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                        </div>
+                    </div>
+                    
+                    <!-- 菜品列表 -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="grid grid-cols-3 gap-4">
+                            <template x-for="dish in getDishesByCategory(selectedCategory)" :key="dish.id">
+                                <div @click="!dish.soldOut && addToOrder(dish)"
+                                     :class="{
+                                         'dish-item bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm transition-all': true,
+                                         'hover:-translate-y-1 hover:shadow-md cursor-pointer': !dish.soldOut,
+                                         'opacity-60 cursor-not-allowed': dish.soldOut,
+                                         'border-accent': isInOrder(dish.id)
+                                     }">
+                                    <div class="h-32 bg-gray-100 overflow-hidden relative">
+                                        <img :src="dish.image" alt="Dish" class="w-full h-full object-cover">
+                                        <div x-show="isInOrder(dish.id)" class="absolute top-2 right-2 w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div x-show="dish.soldOut" class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                            <span class="px-2 py-1 bg-gray-800 text-white text-sm rounded">已沽清</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <h3 class="font-medium" x-text="dish.name"></h3>
+                                        <div class="flex justify-between items-center mt-1">
+                                            <span class="text-accent font-bold" x-text="'¥' + dish.price"></span>
+                                            <button x-show="!dish.soldOut" 
+                                                    class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                                    @click.stop="addToOrder(dish)">
+                                                <i class="fas fa-plus text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧订单区 -->
+                <div class="w-2/5 bg-white rounded-xl shadow-sm flex flex-col overflow-hidden">
+                    <!-- 订单标题 -->
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold">已下单菜品 <span class="text-sm font-normal text-gray-500">(<span x-text="orderedItems.length"></span>个菜品)</span></h3>
+                        <div class="text-sm">
+                            <span class="text-gray-500">订单编号:</span>
+                            <span class="font-medium">A20230512001</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 已下单菜品列表 -->
+                    <div class="p-4 bg-yellow-50 border-b border-yellow-100">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-medium text-yellow-800">已下单菜品</h4>
+                            <span class="text-sm text-yellow-700">12:35下单</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-4">
+                        <template x-for="(item, index) in orderedItems" :key="index">
+                            <div class="order-item mb-4 pb-4 border-b border-gray-100 last:border-0">
+                                <div class="flex justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium" x-text="item.name"></h4>
+                                            <span class="text-accent font-bold" x-text="'¥' + (item.price * item.quantity).toFixed(2)"></span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 mt-1" x-show="item.note">
+                                            <i class="fas fa-comment-alt mr-1"></i>
+                                            <span x-text="item.note"></span>
+                                        </div>
+                                        <div class="text-sm mt-1">
+                                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs" x-show="item.status === 'cooking'">
+                                                <i class="fas fa-fire mr-1"></i> 烹饪中
+                                            </span>
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs" x-show="item.status === 'ready'">
+                                                <i class="fas fa-check mr-1"></i> 已上菜
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center mt-3">
+                                    <div class="text-sm text-gray-500">
+                                        <span x-text="item.quantity + ' x ¥' + item.price"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <!-- 新增菜品区 -->
+                    <div class="p-4 bg-green-50 border-t border-green-100 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-medium text-green-800">新增菜品</h4>
+                            <button class="text-sm text-green-700 hover:text-green-800 flex items-center" 
+                                    @click="clearNewItems">
+                                <i class="fas fa-eraser mr-1"></i> 清空
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 overflow-y-auto max-h-40">
+                        <div x-show="newItems.length === 0" class="text-sm text-gray-500 text-center py-2">
+                            暂无新增菜品
+                        </div>
+                        
+                        <template x-for="(item, index) in newItems" :key="index">
+                            <div class="order-item mb-3 pb-3 border-b border-gray-100 last:border-0">
+                                <div class="flex justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium" x-text="item.name"></h4>
+                                            <span class="text-accent font-bold" x-text="'¥' + (item.price * item.quantity).toFixed(2)"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center mt-2">
+                                    <div class="quantity-control flex items-center">
+                                        <button @click="updateNewItemQuantity(index, Math.max(1, item.quantity - 1))"
+                                                class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200">
+                                            <i class="fas fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="mx-2 text-sm" x-text="item.quantity"></span>
+                                        <button @click="updateNewItemQuantity(index, item.quantity + 1)"
+                                                class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200">
+                                            <i class="fas fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="actions">
+                                        <button @click="removeNewItem(index)"
+                                                class="w-6 h-6 bg-gray-100 text-gray-600 rounded flex items-center justify-center hover:bg-gray-200">
+                                            <i class="fas fa-trash-alt text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <!-- 订单底部操作区 -->
+                    <div class="p-4 bg-gray-50 border-t border-gray-200">
+                        <!-- 订单总计 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>已下单</span>
+                                <span x-text="'¥' + getOrderedTotal().toFixed(2)"></span>
+                            </div>
+                            <div class="flex justify-between text-sm text-green-600 mb-1">
+                                <span>新增菜品</span>
+                                <span x-text="'¥' + getNewTotal().toFixed(2)"></span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg">
+                                <span>总计</span>
+                                <span class="text-accent" x-text="'¥' + (getOrderedTotal() + getNewTotal()).toFixed(2)"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- 操作按钮 -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <a href="checkout-home.html" class="btn-secondary py-3 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cash-register mr-2"></i> 结账
+                            </a>
+                            <button @click="placeAdditionalOrder()" 
+                                    :class="{
+                                        'btn-primary py-3 rounded-lg flex items-center justify-center': true,
+                                        'opacity-60 cursor-not-allowed': newItems.length === 0
+                                    }"
+                                    :disabled="newItems.length === 0">
+                                <i class="fas fa-paper-plane mr-2"></i> 加菜
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('orderSystem', () => ({
+                categories: ['热菜', '凉菜', '主食', '饮料', '酒水', '甜点'],
+                selectedCategory: '热菜',
+                dishes: [],
+                orderedItems: [
+                    {id: 1, name: '宫保鸡丁', price: 68, quantity: 1, status: 'cooking', note: ''},
+                    {id: 11, name: '米饭', price: 5, quantity: 2, status: 'ready', note: '少放葱'},
+                    {id: 16, name: '可乐', price: 12, quantity: 1, status: 'ready', note: '加冰'}
+                ],
+                newItems: [],
+                
+                init() {
+                    this.generateDishes();
+                },
+                
+                generateDishes() {
+                    const dishNames = [
+                        '宫保鸡丁', '水煮鱼', '麻婆豆腐', '鱼香肉丝', '糖醋排骨',
+                        '拍黄瓜', '皮蛋豆腐', '凉拌木耳', '龙井虾仁', '手撕包菜',
+                        '米饭', '蒸饺', '馒头', '炒饭', '炒面',
+                        '可乐', '雪碧', '果汁', '柠檬水', '矿泉水',
+                        '啤酒', '红酒', '白酒', '鸡尾酒', '威士忌',
+                        '提拉米苏', '芝士蛋糕', '冰淇淋', '水果拼盘', '布丁'
+                    ];
+                    
+                    this.dishes = dishNames.map((name, index) => ({
+                        id: index + 1,
+                        name,
+                        price: Math.floor(Math.random() * 80) + 20,
+                        category: this.categories[Math.floor(index / 5)],
+                        image: `https://source.unsplash.com/featured/?food,${name.replace(/\s/g, '')}`,
+                        soldOut: Math.random() > 0.9
+                    }));
+                },
+                
+                getDishesByCategory(category) {
+                    return this.dishes.filter(dish => dish.category === category);
+                },
+                
+                isInOrder(dishId) {
+                    return this.orderedItems.some(item => item.id === dishId) || 
+                           this.newItems.some(item => item.id === dishId);
+                },
+                
+                addToOrder(dish) {
+                    // 检查是否已经在新菜单中
+                    const existingItem = this.newItems.find(item => item.id === dish.id);
+                    
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        this.newItems.push({
+                            ...dish,
+                            quantity: 1
+                        });
+                    }
+                },
+                
+                updateNewItemQuantity(index, quantity) {
+                    if (index >= 0 && index < this.newItems.length) {
+                        this.newItems[index].quantity = quantity;
+                    }
+                },
+                
+                removeNewItem(index) {
+                    this.newItems.splice(index, 1);
+                },
+                
+                clearNewItems() {
+                    this.newItems = [];
+                },
+                
+                getOrderedTotal() {
+                    return this.orderedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                },
+                
+                getNewTotal() {
+                    return this.newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                },
+                
+                placeAdditionalOrder() {
+                    if (this.newItems.length === 0) return;
+                    
+                    // 模拟加菜请求成功
+                    alert('加菜成功！');
+                    
+                    // 将新菜品添加到已下单列表
+                    this.newItems.forEach(item => {
+                        this.orderedItems.push({
+                            ...item,
+                            status: 'cooking'
+                        });
+                    });
+                    
+                    // 清空新菜品列表
+                    this.newItems = [];
+                }
+            }));
+        });
+    </script>
+</body>
+</html> 

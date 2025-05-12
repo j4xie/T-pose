@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐位图 - T-Order POS系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#191919',
+                        accent: '#F7332D',
+                        background: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter 字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-background text-primary">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- 顶部工具栏 -->
+        <header class="header-toolbar flex justify-between items-center px-4 py-2 h-16 bg-white shadow-sm">
+            <!-- 左侧: Logo 和模块导航 -->
+            <div class="flex items-center space-x-4">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10">
+                </div>
+                <!-- 模块标签 - 可根据当前页面动态高亮 -->
+                <nav class="flex space-x-1">
+                    <a href="table-map-A.html" class="px-4 py-2 rounded bg-gray-100 font-medium">餐位</a>
+                    <a href="checkout-home.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">结账</a>
+                    <a href="preorder-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">预订</a>
+                    <a href="sold-out-list.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">沽清</a>
+                    <a href="shift-handover.html" class="px-4 py-2 rounded hover:bg-gray-100 transition">交接班</a>
+                </nav>
+            </div>
+            
+            <!-- 右侧: 状态区域 -->
+            <div class="flex items-center space-x-4">
+                <!-- 网络状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-wifi text-green-500"></i>
+                </div>
+                
+                <!-- 打印机状态 -->
+                <div class="status-icon">
+                    <i class="fas fa-print text-green-500"></i>
+                </div>
+                
+                <!-- 时间 -->
+                <div x-data="{ time: new Date().toLocaleTimeString() }" 
+                     x-init="setInterval(() => time = new Date().toLocaleTimeString(), 1000)"
+                     class="time-display">
+                    <span x-text="time" class="text-sm font-medium"></span>
+                </div>
+                
+                <!-- 班次 -->
+                <div class="shift-info px-2 py-1 bg-gray-100 rounded text-sm">
+                    <span>早班</span>
+                </div>
+                
+                <!-- 用户信息/头像 -->
+                <div class="user-avatar" x-data="{ showDropdown: false }">
+                    <div @click="showDropdown = !showDropdown" class="cursor-pointer relative">
+                        <img src="https://source.unsplash.com/random/40x40/?portrait" alt="User Avatar" 
+                             class="h-8 w-8 rounded-full object-cover">
+                        
+                        <!-- 下拉菜单 -->
+                        <div x-show="showDropdown" 
+                             @click.away="showDropdown = false"
+                             class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <div class="font-medium">张三</div>
+                                <div class="text-sm text-gray-600">收银员</div>
+                            </div>
+                            <div class="p-2">
+                                <a href="login.html" 
+                                   class="block px-4 py-2 text-sm hover:bg-gray-100 rounded">
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 p-4" x-data="tableMap">
+            <!-- 餐位管理工具栏 -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-4">
+                    <!-- 区域切换按钮组 -->
+                    <div class="area-tabs inline-flex bg-white rounded-lg p-1 shadow-sm">
+                        <template x-for="area in areas" :key="area">
+                            <button @click="selectedArea = area"
+                                    :class="{
+                                        'px-4 py-2 rounded-md text-sm font-medium transition-colors': true,
+                                        'bg-accent text-white': selectedArea === area,
+                                        'text-gray-600 hover:bg-gray-100': selectedArea !== area
+                                    }"
+                                    x-text="area"></button>
+                        </template>
+                    </div>
+                    
+                    <!-- 切换视图方式 -->
+                    <div class="view-switcher flex space-x-2">
+                        <a href="table-map-A.html" class="p-2 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                            <i class="fas fa-th"></i>
+                        </a>
+                        <a href="table-map-B.html" class="p-2 bg-accent text-white rounded">
+                            <i class="fas fa-table-cells-large"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 快速操作按钮 -->
+                <div class="quick-actions flex space-x-2">
+                    <!-- 搜索框 -->
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" placeholder="搜索餐桌" 
+                               class="pl-10 pr-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent">
+                    </div>
+                    
+                    <!-- 刷新按钮 -->
+                    <button class="p-2 bg-white text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-100"
+                            @click="generateTables">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    
+                    <!-- 全选按钮 -->
+                    <button class="p-2 bg-white text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-100">
+                        <i class="fas fa-check-square"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 餐位地图视图 (平面图风格) -->
+            <div class="relative bg-white rounded-xl p-6 shadow-md h-[calc(100vh-230px)] overflow-hidden">
+                <!-- 平面图背景 -->
+                <div class="absolute inset-0 bg-gray-50 p-8">
+                    <!-- 大厅区域 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg h-full p-4 relative">
+                        <!-- 区域标题 -->
+                        <div class="absolute -top-4 left-4 bg-white px-3 py-1 rounded-md shadow-sm text-gray-700 font-medium">
+                            <span x-text="selectedArea"></span>
+                        </div>
+                        
+                        <!-- 入口标记 -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-3 py-1 rounded-md shadow-sm flex items-center">
+                            <i class="fas fa-door-open mr-1"></i> 入口
+                        </div>
+                        
+                        <!-- 墙面装饰 -->
+                        <div class="absolute top-6 left-6 w-16 h-32 border-2 border-gray-300 rounded bg-gray-100 flex items-center justify-center">
+                            <span class="text-xs text-gray-500 rotate-90">装饰墙</span>
+                        </div>
+                        
+                        <!-- 服务台 -->
+                        <div class="absolute bottom-6 right-6 w-40 h-20 border-2 border-gray-300 rounded bg-gray-100 flex items-center justify-center">
+                            <span class="text-sm text-gray-500">服务台</span>
+                        </div>
+                        
+                        <!-- 动态摆放餐桌 -->
+                        <div class="grid grid-cols-5 gap-4 pt-10">
+                            <template x-for="table in getTablesByArea(selectedArea)" :key="table.id">
+                                <div @click="table.status === 'idle' ? window.location.href='open-table-empty.html' : window.location.href='open-table-ordered.html'"
+                                     :class="{
+                                         'relative rounded-md flex flex-col items-center justify-center cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg': true,
+                                         'bg-white border-2 border-gray-200': table.status === 'idle',
+                                         'bg-accent text-white': table.status === 'dining',
+                                         'bg-blue-500 text-white': table.status === 'reserved',
+                                         'bg-gray-500 text-white': table.status === 'locked'
+                                     }"
+                                     :style="`width: ${table.seats > 4 ? '110px' : '90px'}; height: ${table.seats > 4 ? '110px' : '90px'};`">
+                                    
+                                    <!-- 桌号 -->
+                                    <div class="text-lg font-bold" x-text="table.name"></div>
+                                    
+                                    <!-- 座位数 -->
+                                    <div class="text-sm mt-1 flex items-center">
+                                        <i class="fas fa-chair mr-1 opacity-80"></i>
+                                        <span x-text="table.seats"></span>
+                                    </div>
+                                    
+                                    <!-- 状态指示器 -->
+                                    <div class="absolute bottom-1 right-1">
+                                        <template x-if="table.status === 'dining'">
+                                            <div class="bg-red-700 text-white text-xs px-1 rounded">
+                                                <span x-text="table.people + '人'"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 缩放和导航控制 -->
+                <div class="absolute bottom-4 right-4 bg-white rounded-lg shadow-md p-2 flex space-x-2">
+                    <button class="p-2 hover:bg-gray-100 rounded">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="p-2 hover:bg-gray-100 rounded">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="p-2 hover:bg-gray-100 rounded">
+                        <i class="fas fa-arrows-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 底部状态栏 -->
+            <div class="mt-6 bg-white rounded-lg p-4 flex justify-between items-center shadow-sm">
+                <div class="table-stats flex space-x-6">
+                    <!-- 总餐桌数 -->
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                        <span class="text-sm">总餐桌: 24</span>
+                    </div>
+                    
+                    <!-- 空闲 -->
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-white border border-gray-300 rounded-full mr-2"></div>
+                        <span class="text-sm">空闲: <span x-text="tables.filter(t => t.status === 'idle').length"></span></span>
+                    </div>
+                    
+                    <!-- 就餐中 -->
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-accent rounded-full mr-2"></div>
+                        <span class="text-sm">就餐中: <span x-text="tables.filter(t => t.status === 'dining').length"></span></span>
+                    </div>
+                    
+                    <!-- 已预订 -->
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                        <span class="text-sm">已预订: <span x-text="tables.filter(t => t.status === 'reserved').length"></span></span>
+                    </div>
+                    
+                    <!-- 已锁定 -->
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-gray-500 rounded-full mr-2"></div>
+                        <span class="text-sm">已锁定: <span x-text="tables.filter(t => t.status === 'locked').length"></span></span>
+                    </div>
+                </div>
+                
+                <!-- 快捷键提示 -->
+                <div class="text-sm text-gray-500">
+                    <span class="mr-3">快捷键:</span>
+                    <kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs mr-1">F1</kbd> 帮助
+                    <kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs mr-1">F2</kbd> 开台
+                    <kbd class="px-1 py-0.5 bg-gray-100 rounded border border-gray-300 text-xs mr-1">Tab</kbd> 切换区域
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 主应用脚本 -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html> 
