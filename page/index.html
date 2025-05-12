@@ -34,6 +34,7 @@
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
+            margin-bottom: 2rem;
         }
         
         .page-frame:hover {
@@ -45,7 +46,7 @@
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* 16:9 宽高比 */
+            padding-bottom: 75%; /* 4:3 宽高比，更接近电脑屏幕 */
         }
         
         .frame-container iframe {
@@ -73,11 +74,11 @@
             { name: '结账-会员结账', path: 'checkout-member.html', description: '会员结账页面' },
             { name: '已结账单', path: 'checkout-history.html', description: '历史账单查询' }
         ],
-        viewMode: 'grid', // 'grid' 或 'full'
+        viewMode: 'list', // 'list' 或 'full'
         selectedPage: null,
         
         toggleViewMode() {
-            this.viewMode = this.viewMode === 'grid' ? 'full' : 'grid';
+            this.viewMode = this.viewMode === 'list' ? 'full' : 'list';
             this.selectedPage = null;
         },
         
@@ -94,7 +95,7 @@
             <div class="container mx-auto flex justify-between items-center">
                 <div>
                     <h1 class="text-3xl font-bold flex items-center">
-                        <img src="https://via.placeholder.com/40x40" alt="T-Order Logo" class="h-10 mr-3">
+                        <img src="../assets/img/logo.png" alt="T-Order Logo" class="h-10 mr-3">
                         T-Order POS 系统
                         <span class="ml-3 text-base font-normal text-gray-500">页面总览</span>
                     </h1>
@@ -104,42 +105,43 @@
                 <!-- 视图切换按钮 -->
                 <div>
                     <button @click="toggleViewMode()" class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 flex items-center">
-                        <template x-if="viewMode === 'grid'">
+                        <template x-if="viewMode === 'list'">
                             <i class="fas fa-expand-alt mr-2"></i>
                         </template>
                         <template x-if="viewMode === 'full'">
-                            <i class="fas fa-th-large mr-2"></i>
+                            <i class="fas fa-list mr-2"></i>
                         </template>
-                        <span x-text="viewMode === 'grid' ? '全屏视图' : '网格视图'"></span>
+                        <span x-text="viewMode === 'list' ? '全屏视图' : '列表视图'"></span>
                     </button>
                 </div>
             </div>
         </header>
         
-        <!-- 网格视图 -->
-        <template x-if="viewMode === 'grid'">
+        <!-- 列表视图（垂直排列） -->
+        <template x-if="viewMode === 'list'">
             <div class="container mx-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="flex flex-col">
                     <template x-for="page in pages" :key="page.path">
                         <div class="page-frame bg-white">
+                            <!-- 页面信息标题 -->
+                            <div class="p-4 border-b border-gray-200">
+                                <h3 class="font-bold text-xl" x-text="page.name"></h3>
+                                <p class="text-gray-500 mt-1" x-text="page.description"></p>
+                            </div>
+                            
                             <!-- 页面预览 -->
                             <div class="frame-container">
                                 <iframe :src="page.path" loading="lazy" title="Page preview"></iframe>
                             </div>
                             
-                            <!-- 页面信息 -->
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg" x-text="page.name"></h3>
-                                <p class="text-sm text-gray-500 mt-1" x-text="page.description"></p>
-                                
-                                <div class="mt-4 flex justify-between items-center">
-                                    <div class="text-sm text-gray-500">
-                                        <span x-text="page.path"></span>
-                                    </div>
-                                    <button @click="selectPage(page)" class="px-3 py-1 bg-accent text-white rounded hover:bg-red-600 text-sm">
-                                        查看
-                                    </button>
+                            <!-- 页面操作 -->
+                            <div class="p-4 flex justify-between items-center bg-gray-50">
+                                <div class="text-sm text-gray-500">
+                                    <span x-text="page.path"></span>
                                 </div>
+                                <button @click="selectPage(page)" class="px-4 py-2 bg-accent text-white rounded hover:bg-red-600">
+                                    查看页面
+                                </button>
                             </div>
                         </div>
                     </template>
