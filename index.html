@@ -26,7 +26,7 @@
     <!-- Inter 字体 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <!-- 自定义样式 -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="page/assets/css/styles.css">
     <style>
         .page-frame {
             border: 1px solid #e5e7eb;
@@ -61,17 +61,17 @@
 <body class="bg-gray-100 text-primary">
     <div id="app" class="min-h-screen p-6" x-data="{
         pages: [
-            { name: '登录', path: 'login.html', description: '用户登录界面' },
-            { name: '选择工作', path: 'select-shift.html', description: '选择工作班次' },
-            { name: '餐位图A', path: 'table-map-A.html', description: '网格式餐位图' },
-            { name: '餐位图B', path: 'table-map-B.html', description: '平面式餐位图' },
-            { name: '开台-未选菜', path: 'open-table-empty.html', description: '开台初始状态' },
-            { name: '开台-已选择菜', path: 'open-table-selected.html', description: '已选择菜品状态' },
-            { name: '开台-已下单菜', path: 'open-table-ordered.html', description: '已下单状态' },
-            { name: '开台-整单备注', path: 'open-table-note.html', description: '添加整单备注' },
-            { name: '结账', path: 'checkout-home.html', description: '结账首页' },
-            { name: '结账-会员结账', path: 'checkout-member.html', description: '会员结账页面' },
-            { name: '已结账单', path: 'checkout-history.html', description: '历史账单查询' }
+            { name: '登录', path: 'page/login.html', description: '用户登录界面' },
+            { name: '选择工作', path: 'page/select-shift.html', description: '选择工作班次' },
+            { name: '餐位图A', path: 'page/table-map-A.html', description: '网格式餐位图' },
+            { name: '餐位图B', path: 'page/table-map-B.html', description: '平面式餐位图' },
+            { name: '开台-未选菜', path: 'page/open-table-empty.html', description: '开台初始状态' },
+            { name: '开台-已选择菜', path: 'page/open-table-selected.html', description: '已选择菜品状态' },
+            { name: '开台-已下单菜', path: 'page/open-table-ordered.html', description: '已下单状态' },
+            { name: '开台-整单备注', path: 'page/open-table-note.html', description: '添加整单备注' },
+            { name: '结账', path: 'page/checkout-home.html', description: '结账首页' },
+            { name: '结账-会员结账', path: 'page/checkout-member.html', description: '会员结账页面' },
+            { name: '已结账单', path: 'page/checkout-history.html', description: '历史账单查询' }
         ],
         viewMode: 'grid', // 'grid' 或 'full'
         selectedPage: null,
