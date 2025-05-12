@@ -23,5 +23,5 @@ jobs:
           folder: ./
           htmlCacheControl: no-cache
           indexPage: index.html
-          notFoundPage: 404.html
+          notFoundPage: 404.html 
 
